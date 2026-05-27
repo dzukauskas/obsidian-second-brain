@@ -690,6 +690,8 @@ PRs welcome:
 - Alternative vault structures
 - VS Code / Cursor setup guides
 
+Building a domain-specific fork (academic, legal, finance, medical)? See [ECOSYSTEM.md](ECOSYSTEM.md) — the upstream repo ships primitives, forks own the domain knowledge. First proof case: [`scholarbrain`](https://github.com/SHzzzAyys/scholarbrain) for academic research.
+
 ---
 
 ## Sponsors

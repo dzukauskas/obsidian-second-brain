@@ -57,7 +57,7 @@ else
   else
     echo "Symlink failed (requires Developer Mode). For the cleanest setup,"
     echo "clone the repo directly into the skills folder:"
-    echo "  git clone https://github.com/eugeniughelbur/obsidian-second-brain ~/.claude/skills/obsidian-second-brain"
+    echo "  git clone https://github.com/dzukauskas/obsidian-second-brain ~/.claude/skills/obsidian-second-brain"
     echo "Then re-run install.sh from that location."
   fi
 fi

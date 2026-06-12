@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# quick-install.sh - one-liner installer for obsidian-second-brain
+# quick-install.sh - one-liner installer for the zukauskenOS fork of obsidian-second-brain
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/eugeniughelbur/obsidian-second-brain/main/scripts/quick-install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/dzukauskas/obsidian-second-brain/main/scripts/quick-install.sh | bash
 #
 # What it does:
 #   1. Clones the repo to ~/.claude/skills/obsidian-second-brain (or pulls if it exists)
@@ -15,7 +15,7 @@
 
 set -euo pipefail
 
-REPO_URL="https://github.com/eugeniughelbur/obsidian-second-brain"
+REPO_URL="https://github.com/dzukauskas/obsidian-second-brain"
 SKILL_DIR="${SKILL_DIR:-$HOME/.claude/skills/obsidian-second-brain}"
 
 red()    { printf '\033[0;31m%s\033[0m\n' "$1"; }

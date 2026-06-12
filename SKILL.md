@@ -67,7 +67,7 @@ This fork is preconfigured for the Family Health OS (zukauskenOS) layout - see
 `references/vault-schema.md`. New machine setup:
 
 ```bash
-git clone <this fork> ~/.claude/skills/obsidian-second-brain
+git clone https://github.com/dzukauskas/obsidian-second-brain ~/.claude/skills/obsidian-second-brain
 bash ~/.claude/skills/obsidian-second-brain/scripts/setup.sh "/path/to/vault"
 ```
 

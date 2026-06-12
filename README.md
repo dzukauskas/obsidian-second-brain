@@ -585,13 +585,13 @@ vault/
 One line:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/eugeniughelbur/obsidian-second-brain/main/scripts/quick-install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/dzukauskas/obsidian-second-brain/main/scripts/quick-install.sh | bash
 ```
 
 Or two commands:
 
 ```bash
-git clone https://github.com/eugeniughelbur/obsidian-second-brain ~/.claude/skills/obsidian-second-brain
+git clone https://github.com/dzukauskas/obsidian-second-brain ~/.claude/skills/obsidian-second-brain
 bash ~/.claude/skills/obsidian-second-brain/scripts/setup.sh "/path/to/your/vault"
 ```
 
@@ -600,7 +600,7 @@ Then: `/obsidian-init`
 ### Codex CLI / Gemini CLI / OpenCode
 
 ```bash
-git clone https://github.com/eugeniughelbur/obsidian-second-brain
+git clone https://github.com/dzukauskas/obsidian-second-brain
 cd obsidian-second-brain
 bash scripts/build.sh --platform codex-cli   # or gemini-cli, or opencode
 cp -R dist/codex-cli/. /path/to/your/vault/   # or .gemini-cli / .opencode/

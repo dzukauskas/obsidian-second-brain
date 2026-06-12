@@ -1,244 +1,164 @@
 # Vault Schema Reference
 
-## Default: Wiki-Style (LLM-First)
+This fork's canonical layout is the **Family Health OS** (zukauskenOS) structure: a
+medical / biohacking / family-health domain fork of obsidian-second-brain. The vault
+is AI-first (the primary reader is the LLM), the owner curates sources and approves
+structure, and the agent derives and connects knowledge.
 
-Optimized for vaults where Claude does most or all of the writing. The primary reader is the LLM, not the human. Obsidian is the storage engine; Claude is the interface.
+Per the upstream ecosystem contract (`ECOSYSTEM.md`), this fork owns the domain layer:
+folder layout, note types, controlled vocabularies, and evidence semantics. Upstream
+core primitives (vault management, AI-first rule, rewrite engine) are inherited.
+
+---
+
+## Canonical Layout
 
 ```
 Your Vault/
-├── _CLAUDE.md                  ← Claude's operating manual
+├── _CLAUDE.md                  ← Claude's operating manual (authoritative; commands never overwrite it)
+├── _DOMAIN.md                  ← Domain context: medical schemas, canonical names, evidence rules
 ├── index.md                    ← Catalog of all pages (Claude reads this FIRST)
-├── log.md                      ← Chronological log of every vault operation
+├── log.md                      ← Thin pointer to logs/ (no entries live here)
 ├── SOUL.md                     ← Identity, values, communication style
-├── CRITICAL_FACTS.md           ← ~120 tokens, always loaded: timezone, manager, location, company
+├── CRITICAL_FACTS.md           ← ~150 tokens, always loaded; derived copy of key personal facts
+├── TODO.md                     ← Deferred infrastructure work and parked decisions
+├── PINNED.md                   ← (optional) cross-session working memory, type: pinned
 │
-├── raw/                        ← IMMUTABLE. Claude reads, never writes.
-│   ├── articles/               ← Clipped articles, web pages
-│   ├── transcripts/            ← Meeting notes, podcast transcripts
-│   ├── pdfs/                   ← Documents, reports
-│   └── videos/                 ← YouTube metadata + transcripts
+├── raw/                        ← IMMUTABLE originals. Owner-curated; Claude reads, NEVER writes.
+│   ├── articles/               ← Articles and papers
+│   ├── books/                  ← Books, textbooks, book excerpts
+│   ├── genetics/               ← Raw DNA exports
+│   ├── guidelines/             ← Official clinical guidelines (ERC/ESC, AHA, JRCALC, ...)
+│   ├── health-history/        ← Anamnesis and medical history documents
+│   ├── labs/                   ← Original lab reports
+│   └── podcasts/               ← Podcast sources
 │
-├── wiki/                       ← Claude's workspace. Claude maintains everything here.
-│   ├── entities/               ← People, companies, tools (flat, one file per entity)
-│   ├── concepts/               ← Ideas, frameworks, methodologies
-│   ├── projects/               ← Project notes
-│   ├── daily/                  ← Daily notes (one per day)
-│   ├── logs/                   ← Dev logs, work logs
-│   ├── reviews/                ← Weekly / monthly reviews
-│   ├── tasks/                  ← Standalone task notes
-│   └── decisions/              ← ADRs (architectural decision records)
+├── wiki/                       ← Claude's workspace. Long-lived, derived, AI-first notes.
+│   ├── people/                 ← Family profiles (type: person). THE canonical source of personal facts.
+│   ├── genes/                  ← Gene knowledge pages (no personal genotypes here)
+│   ├── biomarkers/             ← Biomarker knowledge pages (no personal values here)
+│   ├── supplements/            ← Supplement pages
+│   ├── protocols/              ← Protocol pages
+│   ├── concepts/               ← Concepts, frameworks, syntheses
+│   ├── labs/                   ← Personal lab DATA (type: lab-result), one note per test. Append-only.
+│   ├── dna/                    ← Personal genetic DATA (type: dna-result), one note per person+platform. Append-only.
+│   └── studies/                ← Study workspaces (e.g. studies/paramedic/)
 │
-├── boards/                     ← Kanban boards (Personal, Work, etc.)
-├── templates/                  ← Note templates (Templater plugin)
-└── _trash/                     ← Soft-deleted notes
+├── research/                   ← Staging for raw research output. Freely written AND deleted. NOT a knowledge base.
+├── logs/                       ← Per-day operation logs (logs/YYYY-MM-DD.md), append-only. Lowercase.
+└── brainstorms/                ← Interview / brainstorm checkpoint files
 ```
 
-### Key principles:
-- **raw/ is immutable** - original sources go here. Claude reads them but never modifies them. If a wiki page gets corrupted, re-derive from raw.
-- **wiki/ is Claude's workspace** - Claude is the sole writer. Every entity, concept, and project lives here.
-- **index.md is the front door** - Claude reads this first to navigate. Cheaper and faster than searching.
-- **Flat folders over nested** - `wiki/entities/` is a flat list. Harder for humans to browse, perfect for Claude to grep and index.
+### Key principles
 
----
-
-## Alternative: Obsidian-Style (Human-First)
-
-For users who browse their vault daily in Obsidian. Folders are organized for human spatial memory.
-
-```
-Your Vault/
-├── _CLAUDE.md
-├── index.md
-├── log.md
-├── Home.md                     ← Dashboard with dataview queries
-│
-├── Daily/                      ← Daily notes
-├── Dev Logs/                   ← Technical work logs
-├── Tasks/                      ← Standalone task notes
-├── Projects/                   ← Project notes
-├── People/                     ← One note per person
-├── Boards/                     ← Kanban boards
-│
-├── Knowledge/                  ← Reference material, things learned
-├── Learning/                   ← Books, courses, content consumed
-├── Ideas/                      ← Idea captures
-├── Content/                    ← Content calendar, drafts
-│
-├── Goals/                      ← Annual and life goals
-├── Health/                     ← Health tracking
-├── Finances/                   ← Monthly finance notes
-├── Jobs/                       ← Employment / contract roles
-├── Businesses/                 ← Companies you own
-├── Mentions/                   ← Recognition log
-├── Reviews/                    ← Weekly / monthly reviews
-│
-├── Templates/                  ← Note templates
-└── _trash/                     ← Soft-deleted notes
-```
-
----
-
-## Folder Mapping (Wiki ↔ Obsidian)
-
-| Wiki-style | Obsidian-style | What lives here |
-|---|---|---|
-| `raw/articles/` | `Knowledge/` | Original source material |
-| `wiki/entities/` | `People/` + `Jobs/` + `Businesses/` | People, companies, tools |
-| `wiki/concepts/` | `Ideas/` + `Learning/` | Ideas, frameworks, methodologies |
-| `wiki/projects/` | `Projects/` | Active and archived projects |
-| `wiki/daily/` | `Daily/` | Daily notes |
-| `wiki/logs/` | `Dev Logs/` | Work session logs |
-| `wiki/reviews/` | `Reviews/` | Weekly/monthly reviews |
-| `wiki/tasks/` | `Tasks/` | Standalone task notes |
-| `wiki/decisions/` | (in project notes) | ADRs |
-| `boards/` | `Boards/` | Kanban boards |
+- **raw/ is immutable and owner-curated** - original sources go here, placed by the
+  owner. Claude reads them but never writes or modifies them. If a wiki page gets
+  corrupted, re-derive it from raw.
+- **Data vs knowledge separation** - personal measurements live in data notes
+  (`wiki/labs/`, `wiki/dna/`, profile `timeline:`); general knowledge lives in
+  knowledge pages (`wiki/biomarkers/`, `wiki/genes/`). Never mix personal values
+  into knowledge pages.
+- **Append-only data notes** - `wiki/labs/` and `wiki/dna/` notes are never rewritten
+  once created. New variants/values are appended; existing entries stay.
+- **research/ is a staging area** - the agent saves raw findings there; the owner
+  reviews; the true source gets distilled into `raw/`; synthesis enters `wiki/` only
+  after approval. AI-first schema does not apply in `research/` (same as `raw/`).
+- **No Daily/, Boards/, Tasks/, People/, Ideas/, Bases/, Templates/** - these
+  upstream folders do not exist in this fork's layout. Health observations go to the
+  person profile `timeline:`; operations go to `logs/`; tasks live in `TODO.md`.
+- **New folders and `type` values are created only by the owner.** If content does
+  not fit the existing structure, propose - never create unprompted.
+- **index.md is the front door** - Claude reads it first to navigate. Cheaper and
+  faster than searching.
 
 ---
 
 ## Frontmatter Schemas
 
-### Daily Note
+The authoritative schemas live in the VAULT, not in this file:
+
+- `_CLAUDE.md` section 0.1 - schema tokens (enums, type values)
+- `_DOMAIN.md` - detailed schemas for `lab-result`, `dna-result`, canonical names,
+  evidence semantics
+
+This file documents only the shared baseline. When the vault and this file disagree,
+the vault wins.
+
+### Baseline (every long-lived wiki note)
+
 ```yaml
 ---
-date: 2026-03-24
-tags:
-  - daily
-mood: 4          # 1-5 scale
-energy: 3        # 1-5 scale
+type: <note-type>
+date: 2026-06-12
+tags: [tag1, tag2]
+ai-first: true
 ---
 ```
 
-### Project Note
+Body starts with a `## For future Claude` preamble (2-3 sentences).
+
+### Schema tokens (fixed vocabularies)
+
+- `type`: `operating-manual` | `domain` | `critical-facts` | `identity` | `person` |
+  `gene` | `biomarker` | `supplement` | `protocol` | `concept` | `source` |
+  `lab-result` | `dna-result` | `study-topic` | `planning` | `pinned`
+- `relationship` (person notes): `self` | `spouse` | `child` - **kinship**, never
+  relationship strength. Do not replace with `weak`/`medium`/`strong`.
+- `evidence` / `confidence`: `stated` | `guideline` | `high` | `medium` | `speculation`
+- `platform` (dna-result): `wgs` | `chip`
+- `TBD` is the universal placeholder for any undecided value; it is not a member of
+  any enum.
+
+### Person Note (wiki/people/)
+
 ```yaml
 ---
-date: 2026-03-24
-tags:
-  - project
-status: active   # active | planning | completed | archived | on-hold
-job: "[[Acme Corp]]"   # or Personal, [[Company Name]]
-timeline:                # bi-temporal facts — status changes over time
-  - fact: "status: planning"
-    from: 2026-03-01
-    until: 2026-03-15
-    learned: 2026-03-01
-  - fact: "status: active"
-    from: 2026-03-15
-    until: present
-    learned: 2026-03-15
+type: person
+date: 2026-06-12
+tags: [person, family]
+ai-first: true
+relationship: self        # self | spouse | child
+born: 1990-01-01
+timeline:                  # bi-temporal facts - never delete, only append
+  - fact: "ferritin 85 ug/L"
+    from: 2026-06-01            # event time: when the fact was true in reality
+    until: present              # or the date it stopped being true
+    learned: 2026-06-10         # transaction time: when the vault recorded it
+    source: "raw/labs/2026-06-01-cbc.md"   # optional - where it was learned from
 ---
 ```
 
-### Task Note
-```yaml
----
-date: 2026-03-24
-tags:
-  - task
-status: in-progress   # in-progress | done | waiting | cancelled
-project: "[[Project Name]]"
-job: "[[Company]]"    # or Personal
-requested_by: "[[Person Name]]"
-due: 2026-03-28
----
-```
-
-### Entity Note (Person / Company / Tool)
-```yaml
----
-date: 2026-03-24
-tags:
-  - entity
-  - person       # or: company, tool
-role: "Senior Engineer"        # current role
-company: "[[Acme Corp]]"       # current company
-last_interaction: 2026-03-24
-timeline:                       # bi-temporal facts — never delete, only append
-  - fact: "CTO at Acme Corp"
-    from: 2024-01-01            # event time: when the fact was true
-    until: 2026-04-07
-    learned: 2026-02-23         # transaction time: when the vault learned it
-  - fact: "Architect at Acme Corp"
-    from: 2026-04-07
-    until: present
-    learned: 2026-04-07
-    source: "[[2026-04-07]]"    # where the vault learned it from
----
-```
-
-**Bi-temporal facts rule:** never overwrite a role, company, status, or location. Add a new entry to `timeline:` with:
-- `from` / `until` - **event time**: when the fact was true in reality
-- `learned` - **transaction time**: when the vault first recorded this fact
-- `source` (optional) - where the vault learned it from (daily note, ingested source, etc.)
-
-The `role:` and `company:` top-level fields always reflect the CURRENT state. The `timeline:` preserves full history.
+**Bi-temporal facts rule:** never overwrite a health fact, role, status, or value.
+Add a new entry to `timeline:` with `from`/`until` (event time) and `learned`
+(transaction time). Old value + new value together show a trend, not a contradiction.
+"Supersede" rewrites are forbidden for health facts.
 
 This enables:
-- Historical queries ("who was CTO in January?")
-- Reflective thinking ("you believed X on Tuesday, but after ingesting Y on Wednesday, your understanding shifted to Z")
-- Smart reconciliation (different roles at different times = not a contradiction)
+- Historical queries ("what was the ferritin level in January?")
+- Trend reasoning (values over time are the signal, not noise)
+- Smart reconciliation (different values at different times = not a contradiction)
 - Audit trail (when did the vault learn each fact, and from what source?)
 
-### Source Note (raw/)
+### Data notes (wiki/labs/, wiki/dna/)
+
+Detailed schemas live in the vault's `_DOMAIN.md`. Structural invariants:
+
+- `wiki/labs/`: one `type: lab-result` note per test, named
+  `YYYY-MM-DD - Name - test.md`. Append-only.
+- `wiki/dna/`: one `type: dna-result` note per person + platform, named
+  `Name - PLATFORM.md`. Variants are appended to the list; existing entries never
+  rewritten.
+
+### Source Note (raw/ describers, research/ findings)
+
 ```yaml
 ---
-date: 2026-03-24
-tags:
-  - source
-source_type: article   # article | transcript | pdf | video
+type: source
+date: 2026-06-12
+tags: [source]
+ai-first: true
 source_url: "https://..."
-content_hash: ""       # for drift detection
----
-```
-
-### Concept Note
-```yaml
----
-date: 2026-03-24
-tags:
-  - concept
-status: active   # active | graduated | archived
-related_projects: []
----
-```
-
-### Dev Log
-```yaml
----
-date: 2026-03-24
-tags:
-  - devlog
-project: "[[Project Name]]"
-job: "[[Company]]"
----
-```
-
-### Decision Record (ADR)
-```yaml
----
-date: 2026-03-24
-tags:
-  - decision-record
-status: accepted   # accepted | superseded | deprecated
----
-```
-
-### Kanban Board
-```yaml
----
-kanban-plugin: board
----
-```
-
-### Goal
-```yaml
----
-date: 2026-01-01
-tags:
-  - goal
-category: "career"   # career | health | financial | personal | relationship
-status: active       # active | completed | paused | abandoned
-progress: 35         # 0-100 integer
-target_date: 2026-12-31
+evidence: guideline        # stated | guideline | high | medium | speculation
 ---
 ```
 
@@ -248,43 +168,17 @@ target_date: 2026-12-31
 
 | Type | Pattern | Example |
 |---|---|---|
-| Daily note | `YYYY-MM-DD.md` | `2026-03-24.md` |
-| Dev log | `YYYY-MM-DD — Description.md` | `2026-03-24 — API Gateway Debug.md` |
-| Entity | Full name (flat) | `Jane Smith.md`, `Acme Corp.md` |
-| Concept | Descriptive title | `LLM-Wiki Pattern.md` |
-| Project | Proper name | `My Project Name.md` |
-| Source | `YYYY-MM-DD — Source Title.md` | `2026-04-06 — Karpathy LLM Wiki.md` |
-| Decision | `ADR-YYYY-MM-DD — Title.md` | `ADR-2026-04-06 — Wiki Style Default.md` |
-| Archive prefix | `_archived_` | `_archived_Old Project.md` |
+| Lab data note | `YYYY-MM-DD - Name - test.md` | `2026-06-01 - Darius - CBC.md` |
+| DNA data note | `Name - PLATFORM.md` | `Darius - WGS.md` |
+| Person profile | Real name (Lithuanian letters preserved) | `Darius.md` |
+| Knowledge page | Descriptive title | `Ferritin.md`, `MTHFR.md` |
+| Operation log | `logs/YYYY-MM-DD.md` | `logs/2026-06-12.md` |
+| Dated note | `YYYY-MM-DD - Title.md` | `2026-06-12 - Iron panel review.md` |
 
----
+**No em dashes (—), en dashes (–), or curly quotes anywhere - content AND
+filenames.** Use ASCII `-` and straight quotes. Where upstream patterns say
+`YYYY-MM-DD — Title.md`, this fork uses `YYYY-MM-DD - Title.md`. Lithuanian letters
+(ą č ę ė į š ų ū ž) are always preserved - they are never stripped to ASCII.
 
-## Dataview Query Patterns
-
-### All active projects
-```dataview
-TABLE status, job FROM "wiki/projects"
-WHERE contains(tags, "project") AND status = "active"
-SORT file.name ASC
-```
-
-### Recent daily notes
-```dataview
-TABLE date, mood, energy FROM "wiki/daily"
-SORT date DESC
-LIMIT 7
-```
-
-### All entities (people, companies, tools)
-```dataview
-TABLE role, company, last_interaction FROM "wiki/entities"
-WHERE contains(tags, "entity")
-SORT last_interaction DESC
-```
-
-### Recent sources ingested
-```dataview
-TABLE source_type, source_url FROM "raw"
-SORT date DESC
-LIMIT 10
-```
+Folder and system file names are English (easier to grep); note content is
+Lithuanian.

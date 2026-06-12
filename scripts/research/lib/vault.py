@@ -18,15 +18,12 @@ from urllib.parse import quote
 
 from .config import VAULT_PATH
 
-# Subfolder routing per command (relative to vault root, under Research/)
-SUBFOLDERS = {
-    "x-read":      Path("Research") / "X-reads",
-    "x-pulse":     Path("Research") / "X-pulse",
-    "research":    Path("Research") / "Web",
-    "research-deep": Path("Research") / "Deep",
-    "youtube":     Path("Research") / "YouTube",
-    "podcast":     Path("Research") / "Podcasts",
-}
+# Research notes are STAGING in this fork: they land flat in research/ at the
+# vault root, get reviewed by the owner, and are freely pruned. Provenance
+# lives in the filename (date - command - slug), not in subfolders. The folder
+# is owner-created; this module never creates folders.
+STAGING = Path("research")
+COMMANDS = {"x-read", "x-pulse", "research", "research-deep", "youtube", "podcast"}
 
 
 def slugify(text: str, max_len: int = 80) -> str:
@@ -40,15 +37,19 @@ def slugify(text: str, max_len: int = 80) -> str:
 def filename_for(command: str, topic: str) -> str:
     date = datetime.now().strftime("%Y-%m-%d")
     slug = slugify(topic) or "untitled"
-    return f"{date} - {slug}.md"
+    return f"{date} - {command} - {slug}.md"
 
 
 def write_note(command: str, topic: str, frontmatter: dict[str, Any], body: str) -> Path:
-    """Write a research note to the vault. Returns the absolute path."""
-    if command not in SUBFOLDERS:
+    """Write a research note to the vault's research/ staging folder."""
+    if command not in COMMANDS:
         raise ValueError(f"Unknown command: {command}")
-    folder = VAULT_PATH / SUBFOLDERS[command]
-    folder.mkdir(parents=True, exist_ok=True)
+    folder = VAULT_PATH / STAGING
+    if not folder.is_dir():
+        raise SystemExit(
+            f"research/ staging folder missing at {folder} - the owner creates "
+            "folders in this vault; create it manually before saving research notes."
+        )
     path = folder / filename_for(command, topic)
 
     fm_lines = ["---"]
@@ -99,7 +100,7 @@ def obsidian_uri(note_path: Path) -> str:
 def print_save_links(note_path: Path, file=None) -> None:
     """Print save confirmation with clickable Obsidian + VS Code links to the saved note.
 
-    Also auto-opens the note in Obsidian unless disabled via RESEARCH_AUTOOPEN=0.
+    Auto-open is OFF by default in this fork; set RESEARCH_AUTOOPEN=1 to enable.
     """
     import os
     import subprocess
@@ -111,8 +112,8 @@ def print_save_links(note_path: Path, file=None) -> None:
     print(f"   📖 Open in Obsidian: {uri}", file=out)
     print(f"   ✏️  Open in VS Code:  code \"{note_path}\"", file=out)
 
-    # Auto-open in Obsidian by default. Disable with RESEARCH_AUTOOPEN=0.
-    if os.environ.get("RESEARCH_AUTOOPEN", "1") != "0":
+    # Auto-open is opt-in in this fork. Enable with RESEARCH_AUTOOPEN=1.
+    if os.environ.get("RESEARCH_AUTOOPEN", "0") == "1":
         try:
             import platform
             # Platform-aware open: `open` on macOS, `xdg-open` on Linux,
@@ -128,25 +129,39 @@ def print_save_links(note_path: Path, file=None) -> None:
 
 
 def append_to_log(operation_summary: str) -> None:
-    """Append to the vault's log.md per _CLAUDE.md rules."""
-    log_path = VAULT_PATH / "log.md"
-    date = datetime.now().strftime("%Y-%m-%d")
-    entry = f"\n## [{date}] research-toolkit | {operation_summary}\n"
+    """Append to the vault's per-day operation log (logs/YYYY-MM-DD.md).
+
+    Root log.md is a pointer file in this fork - entries never go there.
+    If the owner has not created logs/ yet, skip silently: this module never
+    creates folders.
+    """
+    logs_dir = VAULT_PATH / "logs"
+    if not logs_dir.is_dir():
+        return
+    now = datetime.now()
+    date = now.strftime("%Y-%m-%d")
+    log_path = logs_dir / f"{date}.md"
+    entry = f"**{now.strftime('%H:%M')}** - research-toolkit | {operation_summary}\n"
+    if not log_path.exists():
+        header = (
+            "---\n"
+            "type: log\n"
+            f"date: {date}\n"
+            "tags: [log]\n"
+            "ai-first: true\n"
+            "---\n\n"
+            "## For future Claude\n\n"
+            f"Operation log for {date}. Append-only; one `**HH:MM** - action | description` "
+            "line per operation.\n\n"
+        )
+        log_path.write_text(header + entry)
+        return
     with log_path.open("a") as f:
         f.write(entry)
 
 
 def append_to_daily(summary_md: str) -> bool:
-    """Append a research summary to today's daily note. Returns True if appended."""
-    date = datetime.now().strftime("%Y-%m-%d")
-    daily_path = VAULT_PATH / "wiki" / "daily" / f"{date}.md"
-    if not daily_path.exists():
-        return False
-    current = daily_path.read_text()
-    block = f"\n### Research - {datetime.now().strftime('%H:%M')}\n\n{summary_md.strip()}\n"
-    if "## 🌙 Evening Review" in current:
-        new = current.replace("## 🌙 Evening Review", f"{block}\n---\n\n## 🌙 Evening Review", 1)
-    else:
-        new = current + block
-    daily_path.write_text(new)
-    return True
+    """Inert in this fork: daily notes do not exist (observations live in the
+    person profile `timeline:`). Kept as a stub to minimize upstream merge
+    conflicts. Always returns False."""
+    return False

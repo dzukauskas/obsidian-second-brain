@@ -8,7 +8,7 @@ Transcript priority:
   2. Whisper API if OPENAI_API_KEY is set (paid, ~$0.006/min)
   3. Show-notes-only fallback (no audio fetch)
 
-Then summarizes via Grok and saves an AI-first note to Research/Podcasts/.
+Then summarizes via Grok and saves an AI-first note to research/ staging.
 Spotify URLs are not supported in v1 (DRM blocks audio access).
 """
 

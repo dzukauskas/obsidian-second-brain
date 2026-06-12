@@ -92,12 +92,26 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   means the vault's PreToolUse guard fires for it too - hooks run regardless of
   --dangerously-skip-permissions.
 
+- `scripts/research/lib/vault.py` - NEUTRALIZED (2026-06-12, tier 2): notes go
+  flat into `research/` staging (provenance in the filename:
+  `YYYY-MM-DD - <command> - <slug>.md`); never creates folders (missing
+  `research/` -> SystemExit telling the owner); `append_to_log` writes the
+  fork's per-day `logs/YYYY-MM-DD.md` format (skips silently when `logs/` is
+  absent; root `log.md` is pointer-only); `append_to_daily` reduced to a
+  documented inert stub; `RESEARCH_AUTOOPEN` now opt-in (default off, also in
+  `.env.example`). Caller docstrings and the `research_deep.py` free-mode
+  prompt synced (note saved to staging; Recommended Vault Updates are REPORTED,
+  not auto-propagated).
+
 Pending (next tiers, planned 2026-06):
 
-- Tier 2 "behavior risks" (remaining): research `scripts/research/lib/vault.py`
-  (mechanical Research/ mkdir + monolithic log.md append).
 - Tier 3 "deletions": commands with no target in this layout (daily, board, task,
-  recap, review, calendar family, etc.) + their SKILL.md sections.
+  recap, review, calendar family, etc.) + their SKILL.md sections. Research
+  residue belongs here too: `scripts/research/notebooklm.py` manages its own
+  `Research/NotebookLM/` paths independently of `lib/vault.py`, and the research
+  command docs (`commands/research*.md`, `x-*.md`, `youtube.md`, `podcast.md`,
+  `notebooklm.md`) still hardcode `Research/` paths, em-dash filename examples,
+  and daily-note link steps - delete or sync when deciding the toolkit's fate.
 
 ## Personal conventions
 

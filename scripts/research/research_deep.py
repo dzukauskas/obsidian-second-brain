@@ -10,8 +10,8 @@ Paid flow (default when PERPLEXITY_API_KEY is set):
 
 Free flow (no key, or --free): vault scan + free key-less source aggregation,
 then emit JSON. The calling Claude does the gap analysis + delta synthesis
-itself, writes the AI-first note to Research/Deep/, and propagates via
-/obsidian-save (see commands/research-deep.md). The vault scan is identical in
+itself, writes the AI-first note to research/ staging, and reports the
+recommended updates (see commands/research-deep.md). The vault scan is identical in
 both modes - /research-deep is vault-first by definition, so OBSIDIAN_VAULT_PATH
 is required either way.
 """
@@ -209,9 +209,10 @@ def run_free_deep(topic: str, academic: bool) -> int:
             "Updates, Open Questions. Every external claim carries a recency marker and source domain; "
             "every vault reference uses [[wikilinks]]. Never invent facts - if coverage is thin "
             "(stats.success is false), say so in Open Questions. Save the note to "
-            "Research/Deep/YYYY-MM-DD - <slug>.md as AI-first (type: research-deep, ai-first: true, "
-            "vault-baseline-notes and sources in frontmatter), then run /obsidian-save propagation on "
-            "the synthesis and honor the Recommended Vault Updates bullets."
+            "research/YYYY-MM-DD - research-deep - <slug>.md as AI-first (type: research-deep, ai-first: true, "
+            "vault-baseline-notes and sources in frontmatter), then REPORT the Recommended Vault "
+            "Updates bullets to the owner - do not propagate them into wiki/ autonomously; "
+            "research/ is staging and the owner promotes findings."
         ),
     }
     print(json.dumps(payload, indent=2, default=encode_results))

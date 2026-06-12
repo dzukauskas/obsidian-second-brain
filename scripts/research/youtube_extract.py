@@ -6,7 +6,7 @@ Metadata + comments: free, requires YOUTUBE_API_KEY (Data API v3).
 Without YOUTUBE_API_KEY: transcript-only mode.
 
 Then summarizes via Grok (cheap call, no live_search).
-Default behavior: print to chat AND save AI-first note to Research/YouTube/.
+Default behavior: print to chat AND save AI-first note to research/ staging.
 """
 
 import sys

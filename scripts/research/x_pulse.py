@@ -2,7 +2,7 @@
 """/x-pulse [topic] - scan X for trends, voices, hooks, and post ideas in a topic.
 
 Output: hot themes (with rep posts + voices), gaps, hooks working, voice/tone, post ideas.
-Default behavior: print to chat AND save AI-first note to Research/X-pulse/.
+Default behavior: print to chat AND save AI-first note to research/ staging.
 """
 
 import json

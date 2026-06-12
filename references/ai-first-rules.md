@@ -47,22 +47,23 @@ So future-Claude knows what to verify before trusting individual facts.
 Every external claim has its source URL inline. Don't paraphrase a citation - keep the actual URL so the claim can be re-verified or refreshed years later.
 
 ### 6. Cross-links are mandatory
-Every person, project, idea, decision, or concept referenced uses `[[wikilinks]]` so the graph is traversable by future-Claude:
+In long-lived `wiki/` notes, every person, gene, biomarker, supplement, protocol, or concept referenced uses `[[wikilinks]]` so the graph is traversable by future-Claude:
 
 ```markdown
-Sarah at [[People/Sarah Chen]] decided to ship the [[Projects/Dashboard Refactor]] by Friday.
+[[Darius]] started [[Magnesium]] after the [[Ferritin]] trend discussion (2026-06-01 labs).
 ```
 
-If a linked note doesn't exist, create a stub (per `references/write-rules.md` § Stub Notes).
+If a linked note doesn't exist, create a stub (per `references/write-rules.md` § Stub Notes). In manifests and temporary planning files wikilinks are optional.
 
-### 7. Confidence levels
-Where applicable, mark claims with confidence:
-- `stated` - directly quoted or claimed by a source
-- `high` - multiple sources agree
-- `medium` - single source, plausible
-- `speculation` - your inference
+### 7. Evidence levels
+Mark claims with the vault's evidence enum:
+- `stated` - a personal fact or datum provided by the owner
+- `guideline` - official clinical guidelines (ERC/ESC, AHA, JRCALC, ...)
+- `high` - meta-analysis, systematic review, or a strong RCT
+- `medium` - a single study or limited clinical data
+- `speculation` - mechanistic hypothesis, podcast opinion, or experimental assumption
 
-Use this in frontmatter (`confidence: high`) or inline (`(confidence: speculation)`).
+Use this in frontmatter (`evidence: high`) or inline (`(evidence: speculation)`). This is precision, not caution: the owner must know what is solid and what is experimental.
 
 ---
 
@@ -83,274 +84,121 @@ Never invent facts, entities, rates, dates, or relationships that were not actua
 
 ## Type Schemas
 
-Frontmatter schemas by note type. **Add fields specific to your type - never remove the universal fields.**
+Frontmatter schemas by note type - the zukauskenOS set. The authoritative source
+is the VAULT (`_CLAUDE.md` section 0.1 for the type list, `_DOMAIN.md` for the
+detailed data schemas); this section is the working summary. **Add fields
+specific to your type - never remove the universal fields. Never invent new
+`type` values - the owner creates them.**
 
-### `type: daily`
+Type list: `operating-manual` | `domain` | `critical-facts` | `identity` |
+`person` | `gene` | `biomarker` | `supplement` | `protocol` | `concept` |
+`source` | `lab-result` | `dna-result` | `study-topic` | `planning` | `pinned` |
+`log` | `synthesis`
+
+### `type: person` (wiki/people/ - family profiles ONLY)
 ```yaml
 date: YYYY-MM-DD
-type: daily
-tags: [daily]
-mood: ""        # optional
-energy: ""      # optional
-ai-first: true
-```
-
-### `type: project`
-```yaml
-date: YYYY-MM-DD              # creation
-updated: YYYY-MM-DD           # last meaningful update
-type: project
-status: active                # active | planning | completed | archived | on-hold
-tags: [project, ...]
-related-people: ["[[People/...]]", ...]
-related-projects: ["[[Projects/...]]", ...]
-ai-first: true
-```
-
-### `type: person`
-```yaml
-date: YYYY-MM-DD              # first interaction logged
-updated: YYYY-MM-DD
 type: person
-tags: [person, ...]
-role: ""
-company: "[[Companies/...]]"
-relationship: weak | medium | strong
-last-interaction: YYYY-MM-DD
-related-projects: ["[[Projects/...]]", ...]
+tags: [person, family]
+relationship: self            # self | spouse | child - KINSHIP, never strength
+born: YYYY-MM-DD
+timeline:                     # bi-temporal facts - append-only, never rewritten
+  - fact: ""
+    from: YYYY-MM-DD          # event time
+    until: present            # or end date
+    learned: YYYY-MM-DD       # transaction time
+    source: ""                # optional provenance
 ai-first: true
 ```
 
-### `type: idea`
+### `type: gene` / `type: biomarker` / `type: supplement` / `type: protocol` / `type: concept`
+Knowledge pages - no personal values in them (those live in data notes and timelines).
 ```yaml
 date: YYYY-MM-DD
-type: idea
-tags: [idea, ...]
-status: captured              # captured | exploring | graduated | shelved
-related-projects: ["[[Projects/...]]", ...]
+type: biomarker               # or gene | supplement | protocol | concept
+tags: [biomarker, ...]
 ai-first: true
 ```
+Every claim in the body carries its source URL, claim date, and evidence level.
 
-### `type: task`
+### `type: lab-result` / `type: dna-result` (wiki/labs/, wiki/dna/ - append-only DATA)
+Full schemas live in the vault's `_DOMAIN.md`. Structural invariants: one
+`lab-result` note per test (`YYYY-MM-DD - Name - test.md`), one `dna-result`
+note per person + platform (`Name - PLATFORM.md`, `platform: wgs | chip`);
+existing notes and entries are never rewritten - new data is appended.
+
+### `type: source`
 ```yaml
 date: YYYY-MM-DD
-type: task
-status: in-progress           # in-progress | done | waiting | cancelled
-priority: 🔴 | 🟡 | 🟢
-due: YYYY-MM-DD
-tags: [task, ...]
-related-projects: ["[[Projects/...]]", ...]
-related-people: ["[[People/...]]", ...]
+type: source
+tags: [source]
+source_url: ""
+evidence: guideline           # stated | guideline | high | medium | speculation
 ai-first: true
 ```
 
-### `type: decision`
-Decisions usually live INSIDE project notes' Key Decisions sections. When a standalone decision note is needed:
+### `type: log` (logs/YYYY-MM-DD.md - append-only)
 ```yaml
 date: YYYY-MM-DD
-type: decision
-tags: [decision, ...]
-related-projects: ["[[Projects/...]]", ...]
-confidence: stated | high | medium | speculation
-sources: [...]                # inline URLs/wikilinks supporting the decision
+type: log
+tags: [log]
 ai-first: true
 ```
+Body: `## For future Claude` preamble, then `**HH:MM** - action | description` lines.
 
-### `type: devlog` / `type: log`
+### `type: synthesis` (wiki/concepts/)
+Outputs from thinking tools (synthesize, panel, vault-deep-synthesis, saved emerge/connect reports):
 ```yaml
 date: YYYY-MM-DD
-type: devlog
-tags: [devlog, ...]
-project: "[[Projects/...]]"
-related-people: ["[[People/...]]", ...]
-ai-first: true
-```
-
-### `type: review`
-```yaml
-date: YYYY-MM-DD              # the date the review was generated
-period-start: YYYY-MM-DD
-period-end: YYYY-MM-DD
-type: review                  # weekly | monthly
-tags: [review, ...]
-ai-first: true
-```
-
-### `type: research` / `type: research-deep` / `type: x-read` / `type: x-pulse` / `type: youtube` / `type: podcast`
-See `commands/research*.md`, `commands/x-*.md`, `commands/youtube.md`, and `commands/podcast.md` for the full schemas. All set `ai-first: true` and follow the universal rules.
-
-### `type: podcast`
-```yaml
-date: YYYY-MM-DD
-time: HH:MM
-type: podcast
-show: ""                      # podcast show name
-host: ""                      # show host or author
-episode-title: ""
-episode-url: ""               # link to episode page (publisher-provided)
-feed-url: ""                  # RSS feed URL
-source-url: ""                # the URL the user pasted (Apple, RSS, etc.)
-guid: ""                      # episode GUID from RSS
-published: ""                 # publisher-provided publish date string
-duration: ""                  # publisher-provided duration string
-transcript-source: rss-transcript-tag | whisper-api | show-notes
-tags: [research, podcast, ...]
-cost-usd: 0.0
-ai-first: true
-```
-
-### `type: adr`
-```yaml
-date: YYYY-MM-DD
-type: adr
-tags: [adr, decision]
-decision: ""                  # one-line summary
-status: proposed | accepted | superseded
-related-projects: ["[[Projects/...]]", ...]
-supersedes: "[[Knowledge/ADR-...]]"   # optional
-ai-first: true
-```
-
-### `type: synthesis` / `type: emerge` / `type: connect` / `type: challenge`
-Outputs from thinking tools. Each saves to `Knowledge/` or `Ideas/` with:
-```yaml
-date: YYYY-MM-DD
-type: <thinking-tool-type>
-tags: [research, thinking, ...]
+type: synthesis
+tags: [thinking, ...]
 sources: [...]                # vault notes that informed this
-related-people: [...]
-related-projects: [...]
 ai-first: true
 ```
 
-### `type: agenda-snapshot`
-Written by `/obsidian-agenda`. A re-derivable point-in-time view of the calendar - Google Calendar is the source of truth, not this note. `fetched-at` is the recency anchor.
-```yaml
-date: YYYY-MM-DD              # date the snapshot was generated
-type: agenda-snapshot
-range: "YYYY-MM-DD..YYYY-MM-DD"
-range-label: today           # today | tomorrow | week | next-week | day | range
-calendar-source: google-calendar
-calendars: [primary]
-fetched-at: "YYYY-MM-DDTHH:MM:SS+HH:MM"   # ISO 8601 with offset
-event-count: 0
-conflict-count: 0
-tags: [agenda, calendar]
-ai-first: true
-```
-
-### `type: meeting`
-Written by `/obsidian-meeting` from a calendar event. Notes / Decisions / Action items sections start empty - never fabricate them (see the anti-fabrication hard rule).
-```yaml
-date: YYYY-MM-DD
-type: meeting
-event-id: ""                 # Google Calendar event id (links the note to the event)
-event-url: ""
-conference-url: ""
-start: "YYYY-MM-DDTHH:MM:SS+HH:MM"
-end: "YYYY-MM-DDTHH:MM:SS+HH:MM"
-duration-min: 0
-organizer: ""
-attendees: ["[[People/...]]", ...]
-tags: [meeting]
-ai-first: true
-```
-
-### `type: recurring-task`
-Written by `/obsidian-recurring`. Tracks a repeating obligation with a cadence and a computed `next-due` that advances on each completion. The History section logs each occurrence.
-```yaml
-date: YYYY-MM-DD
-type: recurring-task
-cadence: ""                  # e.g. "monthly day 20", "every quarter", "weekly Mon"
-owner: ""
-blocker: "[[People/...]]"    # optional - who/what gates it
-next-due: YYYY-MM-DD         # computed next occurrence
-amount: ""                   # optional - for payments
-tags: [recurring-task]
-ai-first: true
-```
-
-### `type: architecture-overview`
-Written by `/obsidian-architect`. The top-level map of a codebase: stack, modules, one diagram, personas. Lives under `Projects/<name>/Architecture/`.
-```yaml
-date: YYYY-MM-DD
-type: architecture-overview
-project: "[[Projects/...]]"
-stack: []                    # languages / frameworks detected
-scanned-commit: ""           # the git short-commit the docs reflect (recency anchor)
-tags: [architecture]
-ai-first: true
-```
-
-### `type: architecture-module`
-Written by `/obsidian-architect`, one per core module: what it does, what it depends on, its role.
-```yaml
-date: YYYY-MM-DD
-type: architecture-module
-project: "[[Projects/...]]"
-module: ""                   # module name
-path: ""                     # path within the codebase
-scanned-commit: ""
-tags: [architecture]
-ai-first: true
-```
+### `type: study-topic` / `type: planning` / `type: pinned`
+Owner-defined working types (wiki/studies/, TODO.md-adjacent planning files,
+PINNED.md). Universal fields apply; see the vault's `_CLAUDE.md` for their
+semantics. `planning` files are exempt from mandatory wikilinks.
 
 ---
 
 ## Preamble Templates by Type
 
-### Daily note
+### Person profile
 ```markdown
 ## For future Claude
-Daily note for YYYY-MM-DD. Captures what was worked on, who was met, decisions made, and energy/mood for the day. Skim the section headers; specific work logs link to dev logs and project notes.
+[Name] is the owner's [self/spouse/child], born [date]. Current state lives in the top-level fields; the full history is the bi-temporal timeline: array - values at different times are a trend, not a contradiction. This profile is THE canonical source of personal facts about [Name].
 ```
 
-### Project note
+### Knowledge page (gene / biomarker / supplement / protocol / concept)
 ```markdown
 ## For future Claude
-[Project name] is a [type — work / personal / open-source] project with status [status] as of [date]. The Overview section explains what it is and why it exists. Recent Activity captures the last 30 days. Key Decisions documents major directional choices with rationale.
+Knowledge page about [topic] as of [date]. Every claim carries its source, claim date, and evidence level (stated/guideline/high/medium/speculation). No personal values live here - those are in wiki/labs, wiki/dna, and profile timelines.
 ```
 
-### Person note
+### Lab data note (lab-result)
 ```markdown
 ## For future Claude
-[Name] is [role] at [[Company]]. Relationship strength: [weak/medium/strong] as of [date]. Last interaction: [date]. The Recent Interactions section logs every conversation chronologically.
+Lab results for [Name], test [name], taken [date], source [raw/labs/...]. Append-only data note - never edited after creation. Interpretation and reference knowledge live in wiki/biomarkers/.
 ```
 
-### Idea note
+### DNA data note (dna-result)
 ```markdown
 ## For future Claude
-Idea captured on [date] about [topic]. Status: [captured/exploring/graduated/shelved]. The body explains the idea, why it's interesting, and what would make it real. If shelved, the reason is documented at the bottom.
+Genetic variants for [Name], platform [wgs/chip]. Append-only: variants are added to the list, existing entries never rewritten. Gene knowledge lives in wiki/genes/.
 ```
 
-### Decision (standalone)
+### Operation log (logs/YYYY-MM-DD.md)
 ```markdown
 ## For future Claude
-Decision made on [date] about [topic]. Context section explains what prompted it. Options Considered lists the alternatives evaluated. Rationale captures why this option won. Consequences documents what changed in the vault as a result.
+Operation log for [date]. Append-only; one `**HH:MM** - action | description` line per operation.
 ```
 
-### Dev log
+### Synthesis (thinking-tool output)
 ```markdown
 ## For future Claude
-Dev log for [date] about [project]. Captures work done, problems encountered, decisions made, and next steps. Specific file paths and commit hashes are preserved verbatim for re-verification.
-```
-
-### Review (weekly / monthly)
-```markdown
-## For future Claude
-[Weekly / Monthly] review covering [period-start] through [period-end]. The review summarizes shipped work, decisions made, people met, and patterns that emerged. Use this as a baseline when researching what was true at the end of the period.
-```
-
-### Research (any research type)
-```markdown
-## For future Claude
-[Research type] on "[topic]" performed on [datetime]. [Specific scope: what was searched, how many sources, what model.] [Caveat about recency or confidence.] Use the recency markers per claim to know what to verify before relying on individual facts.
-```
-
-### ADR
-```markdown
-## For future Claude
-Architectural decision record from [date]. Documents a structural decision in the vault (folder rename, schema change, etc.) so future-Claude can answer "why is the vault structured this way?" without re-deriving the reasoning.
+[Synthesis/panel/cross-reference] on "[topic]" from [date]. Sources listed in frontmatter. Contradictions are surfaced, not resolved - the owner decides. [Caveat about scope or staleness.]
 ```
 
 ---
@@ -392,6 +240,11 @@ When auditing an existing note (Phase 2 work or one-off cleanup), verify:
 
 ---
 
-## Migration Note
+## Fork Note
 
-This rule was established 2026-04-25 and shipped as part of obsidian-second-brain v0.5.0 (Research Toolkit). All 5 research commands (`/x-read`, `/x-pulse`, `/research`, `/research-deep`, `/youtube`) follow it from day one. The 26 existing `/obsidian-*` commands were updated in v0.6.0 (Phase 2) to explicitly reference this document. Notes written before that may not yet meet the standard - `/obsidian-health` flags them.
+The 7 rules and the hard rules above are upstream core (per `ECOSYSTEM.md`);
+the Type Schemas and Preamble Templates sections are the fork-owned domain
+layer, curated 2026-06-12 for the zukauskenOS type set. When merging from
+upstream, keep the fork side of those two sections and port only genuinely
+universal rule improvements (see `DELTAS.md` Upgrade hygiene). The vault's
+`_CLAUDE.md` 0.1 and `_DOMAIN.md` always win over this file on schema details.

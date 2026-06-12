@@ -115,6 +115,13 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
     -calendar. No Calendar MCP configured and no wiki/meetings, wiki/agenda, or
     Tasks targets; if a calendar workflow ever appears, resurrect the then-
     current upstream versions.
+  - Research toolkit commands (7): x-read, x-pulse, research, research-deep,
+    notebooklm, youtube, podcast + the SKILL.md Research Commands and Cost
+    tracking sections. Research goes through the external deep-research skill
+    into research/ staging. `scripts/research/` STAYS (neutralized in tier 2,
+    unreachable without the commands, keeps tests green and upstream merges
+    small) - including notebooklm.py with its own stale Research/ paths, now
+    dead code.
 
 ## Personal conventions
 
@@ -133,10 +140,10 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
 - **Kanban boards, Boards/, Tasks/** - tasks live in the vault's `TODO.md`
 - **Bases/** - human-facing views, rejected 2026-06-10
 - **`scripts/bootstrap_vault.py` presets** - vault is owner-built
-- **Research toolkit commands** (`/research`, `/research-deep`, `/x-*`, `/youtube`,
-  `/podcast`, `/notebooklm`) - external `deep-research` skill + `research/` staging
-  instead; the toolkit's Python layer writes mechanically (Research/ mkdir,
-  monolithic log.md), bypassing vault rules
+- **Research toolkit** - commands DELETED in tier 3 (research goes through the
+  external `deep-research` skill into `research/` staging); the Python layer
+  (`scripts/research/`) stays in the repo, neutralized in tier 2 and
+  unreachable without the commands
 - **Background PostCompact agent** - `OBSIDIAN_BG_AGENT_ENABLED` never set. The
   fork patched it (cwd gate + family-OS prompt, 2026-06-12) but it stays OFF
   until the vault matures and its behavior is seen in supervised mode first

@@ -158,7 +158,11 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   footer in the template). All daily-note steps replaced with logs/ entries;
   all `log.md` fallbacks removed; em-dash filename examples now ASCII.
   Matching SKILL.md sections synced, including the stale /obsidian-init
-  section left over from tier 1.
+  section left over from tier 1. Follow-up 2026-06-12: brainstorms/ references
+  removed again from challenge/learn/world, vault-schema, and SKILL.md - that
+  folder is a grill-me (separate skill) artifact with its own ephemeral
+  lifecycle, not part of this fork's layout; commands reference logs/, TODO.md,
+  and git history instead.
 
 ## Personal conventions
 

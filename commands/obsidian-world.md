@@ -22,7 +22,6 @@ Use the obsidian-second-brain skill. Execute `/obsidian-world`:
 
    **L2 - Current State (~2-5K tokens)**
    - Read `TODO.md` - deferred infrastructure work and parked decisions with conditions
-   - Read the most recent `brainstorms/` file if one was touched in the last 7 days (open question threads)
    - Skim `research/` staging for unreviewed findings awaiting the owner's triage
 
    **L3 - Deep Context (on demand, ~5-20K tokens)**
@@ -34,7 +33,7 @@ Use the obsidian-second-brain skill. Execute `/obsidian-world`:
 3. Present a brief status after L0-L2 (do NOT load L3 unless needed):
    - **Who I am to you**: confirm the persona and communication style
    - **Open infrastructure work**: top items from `TODO.md`
-   - **Open threads**: unfinished things from the operation log and recent brainstorms
+   - **Open threads**: unfinished things from the operation log and `TODO.md`
    - **Awaiting your triage**: unreviewed `research/` staging notes
    - **Today so far**: what's already logged today
 

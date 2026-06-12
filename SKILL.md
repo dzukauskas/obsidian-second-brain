@@ -436,7 +436,7 @@ Steps:
 2. Extract the key premises behind that position
 3. Spawn parallel subagents to search for counter-evidence:
    - **Knowledge agent**: search `wiki/` pages for claims and evidence levels that cut against the position
-   - **History agent**: search `logs/`, `brainstorms/`, and `TODO.md` for past reasoning, reversals, or lessons on this topic
+   - **History agent**: search `logs/`, `TODO.md`, and git commit messages for past reasoning, reversals, or lessons on this topic
    - **Contradictions agent**: search `## Conflict` sections, opposite positions, and profile `timeline:` data that contradicts the plan
 4. Synthesize a structured "Red Team" analysis:
    - **Your position**: restate the claim
@@ -508,7 +508,7 @@ A multi-persona complement to `/obsidian-challenge` (which red-teams from one st
 
 **Reviews the vault's accumulated lessons - active, stale, superseded, and promotion candidates.**
 
-Gathers learnings from `logs/`, `brainstorms/`, `TODO.md` parked decisions, git commit messages (the vault's decision log), and prior pattern reports in `wiki/concepts/`. Classifies each as active / stale / superseded / promotion candidate (appeared 3+ times - suggest exact `_CLAUDE.md` wording, promote only with user confirmation). Saves the report to `wiki/concepts/YYYY-MM-DD - Learnings Review.md`, logs to `logs/`; stale learnings are flagged for the owner, never archived by the agent.
+Gathers learnings from `logs/`, `TODO.md` parked decisions, git commit messages (the vault's decision log), and prior pattern reports in `wiki/concepts/`. Classifies each as active / stale / superseded / promotion candidate (appeared 3+ times - suggest exact `_CLAUDE.md` wording, promote only with user confirmation). Saves the report to `wiki/concepts/YYYY-MM-DD - Learnings Review.md`, logs to `logs/`; stale learnings are flagged for the owner, never archived by the agent.
 
 ---
 
@@ -531,13 +531,13 @@ Uses token budgets to avoid loading the entire vault. Start light, go deeper onl
 Steps:
 1. **L0 - Identity (~200 tokens)**: read `SOUL.md`, `CRITICAL_FACTS.md`, and `PINNED.md` if present
 2. **L1 - Navigation (~1-2K tokens)**: read `index.md` (vault catalog) and today's + yesterday's `logs/YYYY-MM-DD.md`
-3. **L2 - Current State (~2-5K tokens)**: read `TODO.md` (parked decisions), the freshest `brainstorms/` thread, and skim `research/` staging awaiting triage
+3. **L2 - Current State (~2-5K tokens)**: read `TODO.md` (parked decisions) and skim `research/` staging awaiting triage
 4. **L3 - Deep Context (on demand, ~5-20K tokens)**: only load if needed - relevant `wiki/people/` profiles, `wiki/` knowledge pages with their `raw/` sources, `_DOMAIN.md` for data schemas
 
 Present a brief status after L0-L2 (do NOT load L3 unless needed):
 - **Who I am to you**: persona and communication style
 - **Open infrastructure work**: top items from `TODO.md`
-- **Open threads**: anything unfinished (from the operation log + brainstorms)
+- **Open threads**: anything unfinished (from the operation log + `TODO.md`)
 - **Awaiting your triage**: unreviewed `research/` staging notes
 - **Today so far**: what's already logged
 

@@ -13,10 +13,10 @@ The optional argument is a scope: `recent` (last 30 days, default), `all` (entir
 
 3. Spawn parallel subagents to gather learnings:
 
-   - **Lessons agent**: scan `logs/` and `brainstorms/` for lessons, reversals, and decided questions
+   - **Lessons agent**: scan `logs/` for lessons, reversals, and decided questions
    - **Decisions agent**: read decision rationale in `TODO.md` (parked decisions with conditions) and recent git commit messages (the vault's decision log) - extract the rationale and outcome of each
    - **Reports agent**: read recent emerge/synthesize/connect/challenge reports in `wiki/concepts/` (the generated pattern reports)
-   - **Mistakes agent**: scan `logs/` and `brainstorms/` for "what didn't work", "wasted time on", "next time", "lesson", phrases indicating learning from failure
+   - **Mistakes agent**: scan `logs/` and recent git commit messages for "what didn't work", "wasted time on", "next time", "lesson", phrases indicating learning from failure
    - **Wins agent**: scan for patterns that worked - "this saved time", "this approach worked", recurring success patterns
 
 4. For each learning found, classify:
@@ -36,7 +36,7 @@ The optional argument is a scope: `recent` (last 30 days, default), `all` (entir
    - Suggest: keep, archive, or convert to history note
 
    ## Superseded Learnings (already replaced)
-   - Old position -> New position, with the source of the change (commit, brainstorm, TODO entry)
+   - Old position -> New position, with the source of the change (commit, TODO entry)
 
    ## Promotion Candidates (appeared 3+ times)
    - Learnings strong enough to become permanent rules in `_CLAUDE.md`

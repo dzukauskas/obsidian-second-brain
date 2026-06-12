@@ -45,8 +45,7 @@ Your Vault/
 │   └── studies/                ← Study workspaces (e.g. studies/paramedic/)
 │
 ├── research/                   ← Staging for raw research output. Freely written AND deleted. NOT a knowledge base.
-├── logs/                       ← Per-day operation logs (logs/YYYY-MM-DD.md), append-only. Lowercase.
-└── brainstorms/                ← Interview / brainstorm checkpoint files
+└── logs/                       ← Per-day operation logs (logs/YYYY-MM-DD.md), append-only. Lowercase.
 ```
 
 ### Key principles

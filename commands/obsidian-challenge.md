@@ -13,7 +13,7 @@ The optional argument is the idea, belief, or plan to challenge. If not provided
 3. Extract the key premises behind that position
 4. Search the vault for counter-evidence - spawn parallel subagents:
    - **Knowledge agent**: search `wiki/` pages (concepts, protocols, supplements, genes, biomarkers) for claims and evidence levels that cut against the position
-   - **History agent**: search `logs/`, `brainstorms/`, and `TODO.md` decision notes for past reasoning, reversals, or lessons related to this topic
+   - **History agent**: search `logs/`, `TODO.md` decision notes, and git commit messages (the vault's decision log) for past reasoning, reversals, or lessons related to this topic
    - **Contradictions agent**: search for `## Conflict` sections and notes where the user held the opposite position or flagged risks about this exact approach; check profile `timeline:` entries for personal data that contradicts the plan
 5. Synthesize a structured "Red Team" analysis:
    - **Your position**: restate the claim clearly

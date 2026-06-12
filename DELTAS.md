@@ -63,13 +63,21 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   Reconciliation NEVER auto-resolves; save reminders -> single offer, no nagging;
   per-day logs lowercase; bootstrap presets marked unused.
 
+- `commands/obsidian-reconcile.md` - REWRITTEN to find-and-surface (2026-06-12,
+  tier 2): subagents retargeted to the fork's wiki/ folders; timeline values at
+  different times are a trend, not a contradiction; genuine contradictions get a
+  both-sided `## Conflict - <topic> (unresolved, ...)` section in the affected
+  page(s) - no winner rewrites, no `wiki/decisions/`; authority ranking replaced
+  with the vault evidence enum; index.md incremental; logs to lowercase `logs/`;
+  no daily-note step. SKILL.md section synced.
+
 Pending (next tiers, planned 2026-06):
 
-- Tier 2 "behavior risks": `commands/obsidian-reconcile.md` (auto-rewrite winner),
-  `commands/obsidian-ingest.md` (raw/ subfolder writes, autonomous software
-  installs, index rebuild), `hooks/obsidian-bg-agent.sh` (no cwd filter, hardcoded
-  Daily/Boards prompt), research `scripts/research/lib/vault.py` (mechanical
-  Research/ mkdir + monolithic log.md append).
+- Tier 2 "behavior risks" (remaining): `commands/obsidian-ingest.md` (raw/
+  subfolder writes, autonomous software installs, index rebuild),
+  `hooks/obsidian-bg-agent.sh` (no cwd filter, hardcoded Daily/Boards prompt),
+  research `scripts/research/lib/vault.py` (mechanical Research/ mkdir +
+  monolithic log.md append).
 - Tier 3 "deletions": commands with no target in this layout (daily, board, task,
   recap, review, calendar family, etc.) + their SKILL.md sections.
 

@@ -562,21 +562,9 @@ Steps:
 
 ### `/obsidian-reconcile`
 
-**Finds and resolves contradictions across the vault.**
+**Finds and SURFACES contradictions across the vault - the owner resolves them.**
 
-Steps:
-1. Read `index.md` to understand the full vault landscape
-2. Spawn parallel subagents to find contradictions:
-   - **Claims agent**: scan `wiki/concepts/` and `wiki/projects/` for conflicting factual claims
-   - **Entity agent**: scan `wiki/entities/` for outdated roles, companies, or descriptions
-   - **Decisions agent**: scan `wiki/decisions/` for reversed or superseded decisions never updated
-   - **Source freshness agent**: compare `raw/` dates against `wiki/` pages for stale references
-3. For each contradiction, evaluate: which is newer, which is more authoritative, is it a genuine conflict or an evolution
-4. Resolve:
-   - **Clear winner**: rewrite the outdated page, add a History section noting what changed
-   - **Ambiguous**: create `wiki/decisions/Conflict — Topic.md` with both sides, mark `status: open`
-   - **Evolution**: update the page to current state with historical context
-5. Rebuild affected `index.md` sections, append to `log.md`, update daily note
+Parallel subagents scan the knowledge folders (`wiki/concepts/`, `wiki/protocols/`, `wiki/supplements/`, `wiki/genes/`, `wiki/biomarkers/`), check `wiki/people/` timelines for coherence only (values at different times are a TREND, not a contradiction), and flag wiki pages citing stale sources. Each genuine contradiction is documented inside the affected page as `## Conflict - <topic> (unresolved, YYYY-MM-DD)` with BOTH claims, sources, and evidence levels (`stated|guideline|high|medium|speculation`) - never a "winner" rewrite, never a new folder. Personal data (`wiki/labs/`, `wiki/dna/`, `timeline:`) is never modified. Updates `index.md` incrementally and logs to `logs/YYYY-MM-DD.md`; the report lists contradictions surfaced, trends noted, and stale references flagged.
 
 ---
 

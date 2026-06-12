@@ -148,7 +148,7 @@ The `raw/` folder contains original sources (articles, books, guidelines, lab re
 ### Maintain `index.md` and `log.md`
 Two structural files that keep the vault navigable and auditable:
 
-- **`index.md`** - A catalog of all vault pages organized by category. Claude reads this FIRST when navigating the vault instead of searching - faster and cheaper on tokens. Update it whenever a new note is created or deleted. Format: `- [[Note Name]] — brief description` grouped under folder headings.
+- **`index.md`** - A catalog of all vault pages organized by category. Claude reads this FIRST when navigating the vault instead of searching - faster and cheaper on tokens. Update it whenever a new note is created or deleted. Format: `- [[Note Name]] - brief description` (ASCII hyphen) grouped under folder headings.
 
 - **`log.md`** - A thin pointer file at the vault root. It explains the per-day log structure and points at `logs/`. Never write entries into `log.md` itself.
 
@@ -389,6 +389,22 @@ Steps:
 
 ---
 
+### `/obsidian-visualize [optional: topic]`
+
+**Generates an Obsidian canvas map of the vault's knowledge graph.**
+
+Builds the link graph from `index.md` and the vault's `[[wikilinks]]`, then writes `atlas.canvas` (or `atlas-{topic}.canvas` if scoped) at the vault root - people left, genes/biomarkers top-right, supplements/protocols/concepts bottom-right, data notes bottom. Also prints a centrality summary: hub nodes, bridge nodes, orphans (stale ones flagged), clusters, and any single-point-of-failure node holding >25% of edges. Logs to `logs/YYYY-MM-DD.md`.
+
+---
+
+### `/create-command`
+
+**Creates a new slash command via a structured interview - no markdown editing.**
+
+Asks for the command's purpose, category (`vault`/`thinking`/`research`/`meta`), trigger phrases (checked against existing commands for collisions), and steps, then writes `commands/<name>.md` in THIS repo (never into the vault) with the standard frontmatter and AI-first/anti-fabrication footers. New commands must follow the fork's structure rules - no new vault folders or note types.
+
+---
+
 ### `/obsidian-init`
 
 **Generates the vault's navigation and logging infrastructure.**
@@ -485,6 +501,14 @@ The value is in unexpected links. If the connection is obvious, dig deeper.
 **Convenes a panel of distinct perspectives on a decision - one independent verdict per lens, then a synthesis.**
 
 A multi-persona complement to `/obsidian-challenge` (which red-teams from one stance). Uses the vault's `Advisors/` persona notes as panelists if they exist, otherwise four generic lenses (skeptic, user, operator, long-game). Each panelist argues independently before the synthesis; the disagreement is the point and is never hidden. Saves a `type: synthesis` note to `wiki/concepts/`.
+
+---
+
+### `/obsidian-learn [optional: scope]`
+
+**Reviews the vault's accumulated lessons - active, stale, superseded, and promotion candidates.**
+
+Gathers learnings from `logs/`, `brainstorms/`, `TODO.md` parked decisions, git commit messages (the vault's decision log), and prior pattern reports in `wiki/concepts/`. Classifies each as active / stale / superseded / promotion candidate (appeared 3+ times - suggest exact `_CLAUDE.md` wording, promote only with user confirmation). Saves the report to `wiki/concepts/YYYY-MM-DD - Learnings Review.md`, logs to `logs/`; stale learnings are flagged for the owner, never archived by the agent.
 
 ---
 

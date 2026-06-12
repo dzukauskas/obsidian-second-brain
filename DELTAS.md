@@ -111,6 +111,10 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
     section (morning/nightly/weekly/health prompts hardcoding Daily/, kanban,
     and nightly auto-resolve) removed whole; the headless-run gotcha kept as
     its own section with the example retargeted.
+  - Google Calendar family (4): obsidian-agenda, -schedule, -meeting,
+    -calendar. No Calendar MCP configured and no wiki/meetings, wiki/agenda, or
+    Tasks targets; if a calendar workflow ever appears, resurrect the then-
+    current upstream versions.
 
 ## Personal conventions
 

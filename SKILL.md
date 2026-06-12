@@ -322,38 +322,6 @@ Do not ask for guidance on where to save things - infer it. Only ask if somethin
 
 ---
 
-### `/obsidian-agenda`
-
-**Reads Google Calendar and writes a re-derivable AI-first snapshot to the vault.** Claude Code only (needs the Google Calendar MCP).
-
-Range argument: `today` (default), `tomorrow`, `week`, `next-week`, `YYYY-MM-DD`, or `YYYY-MM-DD..YYYY-MM-DD`. Pulls the primary calendar, cross-links attendees to `[[Person]]` notes, and flags conflicts, 3+ back-to-back stretches, working-hours focus blocks, and externally-organized events. Saves to `wiki/agenda/` as `type: agenda-snapshot` (Google Calendar stays the source of truth; the note is a snapshot). Never paraphrases event titles or invents attendees.
-
----
-
-### `/obsidian-schedule`
-
-**Creates or moves a Google Calendar event, then links it back to the vault.** Claude Code only.
-
-Three modes: standalone (`"<title>" <when> <duration>`), from a vault task (`task:<path>`), or suggest-a-time (`task:<...> suggest:<window>`). Resolves attendee emails from each person note's `email:` field and never guesses one; conflict-checks before writing; requests a Meet link when participants span domains. On success it writes `calendar-event-id` / `calendar-event-url` back into the task frontmatter, so a re-run reschedules rather than duplicating.
-
----
-
-### `/obsidian-meeting`
-
-**Generates a meeting note from a Google Calendar event.** Claude Code only.
-
-Resolve the event (`last`, `next`, `today`, `event-id:<id>`, or fuzzy title), cross-link attendees to person notes, and backlink any task whose frontmatter `calendar-event-id` matches. Saves to `wiki/meetings/` as `type: meeting` with the event metadata pre-filled and **empty** Notes / Decisions / Action items sections - never fabricate meeting content that did not happen.
-
----
-
-### `/obsidian-calendar`
-
-**Reconciles the vault against your calendar - flags commitments implied by notes that are not scheduled.** Claude Code only (needs the Google Calendar MCP).
-
-Window argument (`today` / `this week` / `this month`, default this week). Pulls the calendar, then gathers vault-implied commitments by listing and grepping (project `next_action`s and deadlines, due tasks, commitments in recent daily notes, fixed dates in `CRITICAL_FACTS.md`), and reports the gap in two directions. **Flag only - never adds, moves, or changes calendar events.** The inverse of `/obsidian-daily`'s calendar pull.
-
----
-
 ### `/obsidian-person [name]`
 
 **Creates or updates a person note.**

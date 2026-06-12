@@ -175,7 +175,7 @@ evidence: guideline        # stated | guideline | high | medium | speculation
 | Operation log | `logs/YYYY-MM-DD.md` | `logs/2026-06-12.md` |
 | Dated note | `YYYY-MM-DD - Title.md` | `2026-06-12 - Iron panel review.md` |
 
-**No em dashes (—), en dashes (–), or curly quotes anywhere - content AND
+**No em dashes (`—`), en dashes (`–`), or curly quotes anywhere - content AND
 filenames.** Use ASCII `-` and straight quotes. Where upstream patterns say
 `YYYY-MM-DD — Title.md`, this fork uses `YYYY-MM-DD - Title.md`. Lithuanian letters
 (ą č ę ė į š ų ū ž) are always preserved - they are never stripped to ASCII.

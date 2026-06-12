@@ -630,24 +630,9 @@ Hybrid command: `scripts/architect_scan.py` does a deterministic scan (stack, mo
 
 ### `/obsidian-ingest`
 
-**Ingests a source into the vault - one source touches many pages.**
+**Ingests a source - knowledge pages get smarter, personal data stays append-only.**
 
-Steps:
-1. Accept a URL, file path, or pasted text as the source
-2. Classify the source type before full read: article, PDF, transcript, video, or raw text
-3. Read or fetch the full source content
-4. Extract: entities (people, companies, tools), concepts, claims, action items, notable quotes
-5. Save the raw source to `Knowledge/YYYY-MM-DD — Source Title.md` with full summary and source link
-6. Spawn parallel subagents to distribute knowledge across the vault:
-   - **People agent**: create or update People/ notes for each person mentioned
-   - **Projects agent**: update existing project notes with new findings
-   - **Ideas agent**: create or append to Ideas/ for new concepts
-   - **Knowledge agent**: create or update Knowledge/ notes for factual claims and frameworks
-7. Update `index.md` with all newly created notes
-8. Append to `log.md`: `## [YYYY-MM-DD] ingest | Source Title (type) — X created, Y updated`
-9. Update today's daily note with an ingest summary
-
-A single ingest should touch 5-15 files. Compile knowledge once, distribute everywhere.
+Reads the source in place (URL, file, pasted text) - originals enter `raw/` only on the owner's explicit ask, into the existing subfolder set. Never installs software (missing yt-dlp/whisper -> tell the owner, fall back). Parallel subagents then route the content: family facts -> profile `timeline:` appends in `wiki/people/` (external people get NO person notes - attribute inline); knowledge claims -> `wiki/genes|biomarkers|supplements|protocols|concepts` pages rewritten smarter, every claim with source + date + evidence level; personal lab values / variants -> append-only `wiki/labs/` / `wiki/dna/` data notes per the vault's `_DOMAIN.md`; contradictions -> both-sided `## Conflict` sections, surfaced in the report, never superseded. Synthesis pages are suggested, created only on the user's OK. `index.md` updated incrementally; log entry to `logs/YYYY-MM-DD.md`; actionable items reported only (tasks live in the owner's `TODO.md`).
 
 ---
 

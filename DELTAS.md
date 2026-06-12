@@ -71,13 +71,23 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   with the vault evidence enum; index.md incremental; logs to lowercase `logs/`;
   no daily-note step. SKILL.md section synced.
 
+- `commands/obsidian-ingest.md` - REWRITTEN (2026-06-12, tier 2): no autonomous
+  software installs (missing yt-dlp/whisper -> tell the owner, fall back);
+  originals are read in place and enter `raw/` only on explicit ask, into the
+  existing subfolder set; transcripts/image descriptions are derived content
+  (note or `research/`, never `raw/`); agents retargeted (family facts ->
+  timeline appends, external people get no person notes, knowledge pages
+  rewrite-allowed, new Data agent for append-only `wiki/labs`/`wiki/dna`,
+  contradictions both-sided and surfaced); synthesis suggested not auto-created;
+  action items report-only; index.md incremental; logs to lowercase `logs/`; no
+  daily-note step. SKILL.md section synced.
+
 Pending (next tiers, planned 2026-06):
 
-- Tier 2 "behavior risks" (remaining): `commands/obsidian-ingest.md` (raw/
-  subfolder writes, autonomous software installs, index rebuild),
-  `hooks/obsidian-bg-agent.sh` (no cwd filter, hardcoded Daily/Boards prompt),
-  research `scripts/research/lib/vault.py` (mechanical Research/ mkdir +
-  monolithic log.md append).
+- Tier 2 "behavior risks" (remaining): `hooks/obsidian-bg-agent.sh` (no cwd
+  filter, hardcoded Daily/Boards prompt), research
+  `scripts/research/lib/vault.py` (mechanical Research/ mkdir + monolithic
+  log.md append).
 - Tier 3 "deletions": commands with no target in this layout (daily, board, task,
   recap, review, calendar family, etc.) + their SKILL.md sections.
 

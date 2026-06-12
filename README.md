@@ -29,12 +29,21 @@
 
 <h1 align="center">obsidian-second-brain</h1>
 
+> **Fork notice (zukauskenOS):** this is the Family Health OS domain fork of
+> [eugeniughelbur/obsidian-second-brain](https://github.com/eugeniughelbur/obsidian-second-brain).
+> It ships **18 of the upstream 44 commands**, natively targets the zukauskenOS
+> vault layout (append-only health data, bi-temporal timelines, owner-curated
+> raw/), surfaces contradictions instead of auto-resolving them, and removes the
+> daily-note/kanban/research-toolkit/calendar layers. The full deviation ledger
+> lives in [`DELTAS.md`](DELTAS.md); the upstream README body below is kept
+> as-is for upgrade-hygiene reasons and describes the upstream feature set.
+
 <p align="center">
   <strong>An evolution of <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy's LLM Wiki pattern</a>: a vault that rewrites itself.</strong>
   <br /><br />
   <em>Every source updates existing pages instead of just appending new ones. Contradictions reconcile automatically. Your vault compounds while you sleep.</em>
   <br /><br />
-  <em>44 commands &middot; auto-synthesis &middot; thinking tools that argue with you</em>
+  <em>18 commands in this fork &middot; synthesis &middot; thinking tools that argue with you</em>
   <br /><br />
   <em>live research from X, the web, and YouTube &middot; 4 scheduled agents &middot; 4 role presets</em>
   <br /><br />

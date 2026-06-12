@@ -1,28 +1,22 @@
 ---
 name: obsidian-second-brain
 description: >
-  Operate any Obsidian vault as a living, self-rewriting second brain (an evolution
-  of Karpathy's LLM Wiki pattern: sources rewrite existing pages, contradictions
-  reconcile automatically, scheduled agents maintain the vault while you sleep).
-  Use this skill whenever
-  the user asks Claude to read, write, update, search, or manage their Obsidian
-  vault - including saving notes from conversation, creating daily entries, updating
-  kanban boards, logging dev work, managing people notes, capturing decisions,
-  tracking deals, or maintaining any vault structure. Also triggers when the user
-  wants to bootstrap a new vault from scratch, run a vault health check, or drop
-  a _CLAUDE.md into their vault so all Claude surfaces share the same operating rules.
-  Includes a research toolkit (7 commands: /x-read, /x-pulse, /research, /research-deep,
-  /notebooklm, /youtube, /podcast) for AI-powered research via Grok, Perplexity, NotebookLM,
-  YouTube, and podcast feeds - findings save
-  to the vault automatically following the AI-first vault rule. Use proactively whenever
-  the conversation produces information worth preserving (decisions, people met, projects
-  started, tasks completed, lessons learned, research findings).
+  Operate the family health OS Obsidian vault (zukauskenOS layout - a medical domain
+  fork of obsidian-second-brain). Use this skill when the user asks Claude to read,
+  write, update, search, or manage their Obsidian vault - including ingesting lab
+  results or genetic data, updating family member profiles, maintaining knowledge
+  pages (genes, biomarkers, supplements, protocols, concepts), logging operations to
+  logs/, running a vault health check, or generating the index.md catalog. Writes
+  follow the vault's _CLAUDE.md: append-only data notes, bi-temporal timeline:
+  facts, contradictions surfaced to the owner (never auto-resolved), new structure
+  only with owner approval. Do not save proactively - when a conversation produces
+  durable facts, offer once to file them and let the user decide.
 ---
 
 # Obsidian Second Brain
 
-> Claude operates your Obsidian vault as a self-rewriting knowledge base. An evolution of [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): sources rewrite existing pages instead of just appending, contradictions reconcile automatically, and scheduled agents maintain the vault while you sleep.
-> Everything worth remembering gets saved. Every update propagates everywhere it belongs.
+> Claude operates your Obsidian vault as a living knowledge base - this is a medical domain fork of the upstream skill (an evolution of [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)).
+> Knowledge pages get smarter with every source. Personal health data is append-only and bi-temporal. Contradictions are surfaced to the owner, never auto-resolved. Updates propagate only within the owner-approved structure.
 
 ---
 
@@ -67,39 +61,26 @@ list_files_in_vault()
 
 Scan the structure to understand: folder names, template locations, naming conventions, frontmatter patterns. Then read 2-3 existing notes with `get_file_contents(path)` to calibrate writing style before creating anything new.
 
-### 3. Bootstrap a new vault
+### 3. Set up on a new machine
 
-If the user has no vault yet, run:
+This fork is preconfigured for the Family Health OS (zukauskenOS) layout - see
+`references/vault-schema.md`. New machine setup:
+
 ```bash
-# One-line install + bootstrap (asks 3 questions: vault path, your name, preset)
-curl -sL https://raw.githubusercontent.com/eugeniughelbur/obsidian-second-brain/main/scripts/quick-install.sh | bash
-
-# Or manual:
-python scripts/bootstrap_vault.py --path ~/path/to/vault --name "Your Name"
-
-# With a preset:
-python scripts/bootstrap_vault.py --path ~/my-vault --name "Your Name" --preset executive
-python scripts/bootstrap_vault.py --path ~/my-vault --name "Your Name" --preset builder
-python scripts/bootstrap_vault.py --path ~/my-vault --name "Your Name" --preset creator
-python scripts/bootstrap_vault.py --path ~/my-vault --name "Your Name" --preset researcher
-
-# With assistant mode (maintaining vault for someone else):
-python scripts/bootstrap_vault.py --path ~/my-vault --name "Your Name" --mode assistant --subject "Boss Name"
+git clone <this fork> ~/.claude/skills/obsidian-second-brain
+bash ~/.claude/skills/obsidian-second-brain/scripts/setup.sh "/path/to/vault"
 ```
 
-Then configure `mcp-obsidian` to point at the new vault path and restart Claude.
+The vault travels separately (its own repo / backup) and carries its authoritative
+`_CLAUDE.md` and `_DOMAIN.md` with it.
 
-**Presets** customize the vault for different use cases:
-- **`executive`** - Decisions, people, meetings, strategic planning. Kanban: OKRs, Quarterly, Weekly.
-- **`builder`** - Projects, dev logs, architecture decisions, debugging. Kanban: Backlog, Sprint, Done.
-- **`creator`** - Content calendar, ideas pipeline, audience notes, publishing. Kanban: Ideas, Drafts, Published.
-- **`researcher`** - Sources, literature notes, hypotheses, methodology. Kanban: Reading, Processing, Synthesized.
+For a genuinely new, empty vault: create the folder skeleton by hand following
+`references/vault-schema.md`, then run `/obsidian-init` to generate `index.md` +
+`logs/` and draft a `_CLAUDE.md` from `references/claude-md-template.md`.
 
-Default (no preset) gives a general-purpose vault. All presets use wiki-style by default.
-
-**Assistant mode** creates a `_CLAUDE.md` configured for operating a vault on behalf of someone else. See `references/claude-md-assistant-template.md`.
-
-See `references/vault-schema.md` for full structural details.
+The upstream `scripts/bootstrap_vault.py` presets (default/executive/builder/
+creator/researcher) scaffold the author's generic layouts and are NOT used by this
+fork (see `DELTAS.md`).
 
 ---
 
@@ -123,115 +104,94 @@ Every write operation must ask: *where else does this belong?*
 
 | You create/update... | Also update... |
 |---|---|
-| A new project note | Kanban board (add to Backlog), today's daily note (link it) |
-| A task completed | Kanban board (move to Done), project note (log it), daily note |
-| A person note | Daily note (mention interaction), People index if it exists |
-| A dev log | Daily note (link it), project note (Recent Activity) |
-| A deal update | Side Biz / Deals kanban, Dashboard totals |
-| A decision made | Project note (Key Decisions), daily note |
-| A mention/shoutout | Mentions Log, person's note, daily note |
-| A hook, contrarian angle, or content idea | `social-media/ideas.md` (if folder exists) |
-| A specific reusable number or stat | `social-media/data-points.md` (if folder exists) |
-| An external post that performed well + why | `social-media/swipe-file.md` (if folder exists) |
-| Research findings worth keeping | `social-media/research/YYYY-MM-DD — topic.md` (if folder exists) |
-| Any vault write | operation log (`Logs/YYYY-MM-DD.md` if `Logs/` exists, else `log.md`), `index.md` (update if new note created) |
+| A lab data note (`wiki/labs/`) | Person profile `timeline:` (append), `index.md`, `logs/YYYY-MM-DD.md` |
+| A health fact stated in conversation | Person profile `timeline:` (append, never overwrite), `CRITICAL_FACTS.md` if it changes an always-loaded fact |
+| A knowledge page (gene, biomarker, supplement, protocol, concept) | `[[wikilinks]]` to/from related pages, `index.md`, `logs/` |
+| A research finding | `research/` staging only - `wiki/` and `raw/` only after owner approval |
+| Any vault write | operation log `logs/YYYY-MM-DD.md`, `index.md` (update if a note was created) |
 
-Always propagate. Never create a single orphaned note.
+Always propagate within the approved structure. Never create a single orphaned note - and never create new folders to propagate into (propose them to the owner instead).
 
 ### Bi-temporal facts - never overwrite, always append
-When a fact changes (role, company, status, location, tool), NEVER delete the old value. Add a new entry to the `timeline:` frontmatter array with both event time AND transaction time:
+When a fact changes (a biomarker value, a supplement started or stopped, a symptom, a status), NEVER delete the old value. Add a new entry to the `timeline:` frontmatter array with both event time AND transaction time:
 
 ```yaml
 timeline:
-  - fact: "CTO at Single Grain"
-    from: 2024-01-01            # event time: when it was true
-    until: 2026-04-07
-    learned: 2026-02-23         # transaction time: when the vault learned it
-    source: "[[2026-02-23]]"    # where from
-  - fact: "Architect at Single Grain"
-    from: 2026-04-07
+  - fact: "ferritin 60 ug/L"
+    from: 2026-01-15            # event time: when it was true
+    until: 2026-06-01
+    learned: 2026-01-20         # transaction time: when the vault learned it
+    source: "raw/labs/2026-01-15-cbc.md"
+  - fact: "ferritin 85 ug/L"
+    from: 2026-06-01
     until: present
-    learned: 2026-04-07
-    source: "[[2026-04-07]]"
+    learned: 2026-06-10
+    source: "raw/labs/2026-06-01-cbc.md"
 ```
 
-Top-level fields (`role:`, `status:`, `company:`) always reflect the CURRENT state. The `timeline:` preserves the full history with provenance.
+This is especially non-negotiable for health facts: old value + new value together show a TREND - the most valuable signal in the vault. "Supersede" rewrites are forbidden for health facts even if a command asks for them.
 
 This enables:
-- Historical queries ("who was my manager in February?")
-- Reflective thinking ("you believed X on Tuesday, then ingested Y on Wednesday and shifted to Z")
-- Smart reconciliation (different facts at different times = not a contradiction)
+- Historical queries ("what was the ferritin level in January?")
+- Trend reasoning ("ferritin rising since starting iron protocol")
+- Smart reconciliation (different values at different times = not a contradiction)
 - Full audit trail (when did the vault learn each fact, from what source?)
 
 ### CRITICAL_FACTS.md - always loaded
-A tiny file (~120 tokens) loaded alongside `SOUL.md` at L0 in every session. Contains facts needed in every conversation:
-- Timezone
-- Current manager
-- Current location
-- Current company and role
-- Any other fact that's true RIGHT NOW and relevant to every interaction
+A tiny file (~150 tokens) loaded alongside `SOUL.md` at L0 in every session. Contains facts needed in every conversation (family members and key health context, location/timezone, anything true RIGHT NOW and relevant to every interaction).
 
-Update this file whenever a critical fact changes. Keep it under 150 tokens.
+It is a DERIVED copy: the canonical source of personal facts is the `wiki/people/` profile. When a fact changes, update the profile first (old value goes to `timeline:`), then refresh `CRITICAL_FACTS.md` to match. Keep it under 150 tokens.
 
-### Raw is immutable
-In wiki-style vaults, the `raw/` folder contains original sources (articles, transcripts, PDFs). Claude reads these but NEVER modifies them. They are the source of truth. If a wiki page gets corrupted, re-derive it from the raw source. When ingesting, always save the original to `raw/` and the derived pages to `wiki/`.
+### Raw is immutable and owner-curated
+The `raw/` folder contains original sources (articles, books, guidelines, lab reports, DNA exports). Claude reads these but NEVER writes or modifies them. They are the source of truth: if a wiki page gets corrupted, re-derive it from the raw source. Originals enter `raw/` through the owner - the agent distills a source into `raw/` only when the owner explicitly asks (e.g. promoting a verified finding from `research/`). The `raw/` subfolder set is fixed by the owner; never create new subfolders.
 
 ### Maintain `index.md` and `log.md`
 Two structural files that keep the vault navigable and auditable:
 
 - **`index.md`** - A catalog of all vault pages organized by category. Claude reads this FIRST when navigating the vault instead of searching - faster and cheaper on tokens. Update it whenever a new note is created or deleted. Format: `- [[Note Name]] — brief description` grouped under folder headings.
 
-- **`log.md`** - An append-only chronological log of every vault operation. Every save, ingest, health check, and structural change gets a timestamped entry. Never delete or rewrite entries - only append. Format: `## [YYYY-MM-DD] action | Description`
+- **`log.md`** - A thin pointer file at the vault root. It explains the per-day log structure and points at `logs/`. Never write entries into `log.md` itself.
 
-### Per-day operation logs (modernized vaults)
-Vaults initialized with `/obsidian-init` (v0.9+) use a split log structure instead of a monolithic `log.md`:
+### Per-day operation logs
+This fork always uses the split log structure, lowercase:
 
-- **`Logs/YYYY-MM-DD.md`** - one file per day, append-only. Format: `**HH:MM** - action | description`
-- **`log.md` at vault root** - pointer file only. Never write entries here; it explains the per-day structure and ships the entry template.
+- **`logs/YYYY-MM-DD.md`** - one file per day, append-only. Format: `**HH:MM** - action | description`, with frontmatter (`type: log`, `date`, `tags`, `ai-first: true`).
+- Never delete or rewrite log entries - only append. Overwriting `logs/` files is blocked by the vault's write guard.
 
-To migrate an existing monolithic `log.md`: run `python scripts/migrate_log.py --vault <path>`.
 To refresh the stats block in `index.md` after bulk writes: run `python scripts/vault_stats.py --vault <path>`.
 
-When writing operation log entries, check whether the vault uses the old (`log.md`) or new (`Logs/YYYY-MM-DD.md`) structure and write to the correct location.
+### The vault is a living system - with append-only zones
+The vault is not a filing cabinet, but "living" means different things in different zones:
+- **Knowledge pages** (`wiki/` genes, biomarkers, supplements, protocols, concepts) get REWRITTEN smarter with new context - more connected, more current, history preserved
+- **Personal data** (`wiki/labs/`, `wiki/dna/`, profile `timeline:` entries) is APPEND-ONLY - the history IS the signal, never rewrite it
+- **Contradictions** between sources get documented with both sides and surfaced to the owner - never silently resolved
+- **Stale external claims** get flagged with their dates so the owner knows what to re-verify
 
-### The vault is a living system
-The vault is not a filing cabinet. It is a living knowledge base that rewrites itself with every input. When new information enters:
-- Existing pages get REWRITTEN with new context, not just appended to
-- Contradictions between old and new claims get resolved or explicitly documented
-- New patterns across multiple sources trigger automatic synthesis pages
-- Stale claims get replaced with current information, with history preserved
+The vault after an ingest should be DIFFERENT - not just bigger. If knowledge pages aren't smarter and more connected, the ingest wasn't deep enough.
 
-The vault after an ingest should be DIFFERENT - not just bigger. If pages that existed before aren't smarter, more connected, and more current, the ingest wasn't deep enough.
-
-### Two-Output Rule
-Every interaction that produces insight must generate two outputs:
+### Two-Output Rule (within the approved structure)
+An interaction that produces durable insight should consider two outputs:
 1. **The answer** - what the user sees in the conversation
-2. **A vault update** - the insight filed back into the relevant note(s)
+2. **A vault update** - the insight filed into the relevant note(s)
 
-This applies to all thinking tools and any query where Claude synthesizes information from the vault.
+File directly when the update is clearly in-structure (a health fact appended to a profile `timeline:`, a knowledge page made smarter, an operation logged). When the insight would require NEW structure (a folder, a note type), propose it to the owner instead - never create structure unprompted.
 
 ### Synthesis Hook
-When Claude notices a pattern during any operation (ingest, query, challenge, emerge), it should automatically create a synthesis page in `wiki/concepts/`. Patterns include:
+When Claude notices a pattern during any operation (ingest, query, study session), suggest a synthesis page in `wiki/concepts/`. Patterns include:
 - The same concept appearing in 3+ unrelated sources
 - A claim being reinforced by multiple independent sources
 - A trend emerging across time-sequenced notes
 - Two entities sharing unexpected connections
 
-Synthesis pages are the vault thinking for itself - connecting dots the user hasn't connected yet.
+Synthesis pages connect dots the user hasn't connected yet. Create one directly only when the user agreed or explicitly asked for synthesis; always log it in `logs/`.
 
-### Reconciliation
-The vault should never contain two pages that disagree without knowing they disagree. When contradictions are found (during ingest, health checks, or queries), either:
-- Resolve them: rewrite the outdated page, preserve history
-- Document them: create an explicit conflict page marked as an open question
+### Reconciliation - surface, never auto-resolve
+The vault should never contain two pages that disagree without knowing they disagree. When contradictions are found (during ingest, health checks, or queries):
+- **Personal values at different times are NOT contradictions** - they are a `timeline:` trend
+- **Genuine knowledge contradictions**: record BOTH claims with sources, dates, and evidence levels, and surface them to the owner - never pick a "winner" and rewrite the loser, even if a command suggests it
 
-Use `/obsidian-reconcile` for vault-wide truth maintenance.
-
-### Proactive save reminders
-Unsaved conversations are lost knowledge. Claude should proactively remind the user to save:
-- After 10+ exchanges: suggest "Want me to run /obsidian-save before we continue?"
-- When the user signals wrap-up (e.g., "ok", "thanks", "done", "bye", "that's it"): suggest "Before you go - want me to /obsidian-save this conversation?"
-- When a logical work block completes (feature shipped, decision made, problem solved): suggest saving
-- Never skip the reminder. This is especially critical on Claude Desktop where there's no background agent.
+### Save offers - no nagging
+When a conversation produces durable facts (a health fact, a decision, a verified source), offer ONCE to file them into the vault. Never push, never repeat the offer, never save the conversation proactively. Unprompted writes are limited to the routine propagation above (logs, index, timeline append during an operation the user requested).
 
 ### Search before creating
 Before creating any new note, search for an existing one:
@@ -269,11 +229,10 @@ See `references/vault-schema.md` for full frontmatter specs by note type.
 
 See `references/write-rules.md` for the complete guide. Summary:
 
-- **Links**: Use `[[Note Name]]` for internal links. Always link to people, projects, and jobs mentioned in a note.
-- **Dates**: ISO format (`YYYY-MM-DD`) in frontmatter. Human format (`March 24`) in body text.
-- **Naming**: `YYYY-MM-DD — Title.md` for dated notes. `Title.md` for evergreen notes. No special characters except `—` (em dash).
-- **Status values**: `active` / `planning` / `completed` / `archived` / `on-hold` for projects. `in-progress` / `done` / `waiting` for tasks.
-- **Kanban**: Items follow the format `- [ ] 🔴 **Title** · @{YYYY-MM-DD}\n\tDescription [[Link]]`
+- **Links**: Use `[[Note Name]]` for internal links. In long-lived `wiki/` notes always link people, genes, biomarkers, supplements, protocols, and concepts.
+- **Dates**: ISO format (`YYYY-MM-DD`) everywhere - frontmatter, `timeline:` entries, body text.
+- **Naming**: `YYYY-MM-DD - Title.md` for dated notes (ASCII hyphen). `Title.md` for evergreen notes. **No em dashes or curly quotes in content or filenames.** Lithuanian letters are always preserved.
+- **Schema tokens**: fixed enums live in the vault (`_CLAUDE.md` 0.1, `_DOMAIN.md`); never translate, inflect, or invent them. Unknown values are `TBD`.
 
 ---
 
@@ -302,30 +261,28 @@ To install it: write the file to the vault root. Every Claude session that start
 ## Common Operations
 
 ### Save info from conversation
-When a conversation produces something vault-worthy:
-1. Identify the note type (decision → project note, person met → People/, task → board + Tasks/, etc.)
-2. Check if a relevant note already exists
-3. Write or update - always frontmatter-first
-4. Propagate to boards, daily note, linked notes
+When a conversation produces something vault-worthy (and the user agreed to save):
+1. Identify the note type (health fact → profile `timeline:`, knowledge → the matching `wiki/` page, raw research finding → `research/`)
+2. Check if a relevant note already exists (search first - duplicates are vault rot)
+3. Write or update - always frontmatter-first, AI-first structure for long-lived notes
+4. Propagate per the table above: wikilinks, `index.md`, `logs/`
 
-### Create today's daily note
-```
-date = today in YYYY-MM-DD format
-path = Daily/{date}.md
-```
-Read `Templates/Daily Note.md`, fill in the date fields, create the file.
-Then scan recent conversation for anything worth logging in today's sections.
+### Record a health observation
+A symptom, a supplement started or stopped, a medication, an illness:
+1. Append a `timeline:` entry to the person's profile in `wiki/people/` (`fact`, `from`, `until: present`, `learned`, optional `source`)
+2. Never overwrite previous entries - close the old one's `until:` if it stopped being true
+3. Refresh `CRITICAL_FACTS.md` if the fact is always-loaded
+4. Log the operation in `logs/YYYY-MM-DD.md`
 
-### Log a dev session
-Read `Templates/Dev Log.md`. Fill: date, project name, what was worked on, problems solved, decisions made, next steps.
-Save to `Dev Logs/YYYY-MM-DD — Project Name.md`.
-Link from project note's Recent Activity section and today's daily note.
+### Log an operation
+Append `**HH:MM** - action | description` to `logs/YYYY-MM-DD.md`. If it's the day's first entry, create the file with frontmatter (`type: log`, `date`, `tags`, `ai-first: true`). Root `log.md` is a pointer - never write entries there.
 
-### Update a kanban board
-Boards use the `kanban-plugin: board` frontmatter.
-Columns are `## Column Name` headers.
-Items are `- [ ] **Title** · @{due-date}\n\tDescription [[Links]]`
-Completed items move to the `## ✅ Done` column with a strikethrough: `- [x] ~~**Title**~~ ✅ Date`
+### Ingest a lab report
+1. The original lives in `raw/labs/` (placed by the owner, or distilled there on the owner's explicit ask)
+2. Create the data note `wiki/labs/YYYY-MM-DD - Name - test.md` (`type: lab-result`) - append-only, never edit an existing lab note
+3. Append notable values to the person's profile `timeline:`
+4. Knowledge about the markers lives in `wiki/biomarkers/` - no personal values there
+5. Update `index.md`, log the ingest in `logs/`
 
 ### Run vault health check
 ```bash

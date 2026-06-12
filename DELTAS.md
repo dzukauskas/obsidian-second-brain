@@ -134,6 +134,16 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   and loose ideas report-only); daily-note and social-media steps removed;
   logs to lowercase `logs/`; ambiguous routing asks the owner. SKILL.md
   section synced.
+- VERIFICATION ROUND fixes (2026-06-12, post-tier-3 audit): install chain
+  repointed at the fork (`scripts/quick-install.sh` REPO_URL + usage comment,
+  README install one-liner and both git-clone blocks, `install.sh` fallback
+  hint, SKILL.md quick-start URL) - previously every documented install path
+  cloned UPSTREAM; `references/ai-first-rules.md` curated (fork type schemas
+  and preamble templates, kinship person schema, evidence enum with
+  `guideline`; rules 1-7 + hard rules stay upstream-core per ECOSYSTEM.md);
+  SKILL.md index format example de-em-dashed; SKILL.md sections added for
+  /obsidian-visualize, /create-command, /obsidian-learn (all 18 now
+  documented).
 - Surviving commands SCRUBBED of deleted-structure references (2026-06-12,
   tier 3): person (wiki/people family-only, kinship enum, timeline appends),
   world (L0-L3 retargeted to PINNED/TODO/brainstorms/research staging),
@@ -192,13 +202,18 @@ git merge upstream/main
 ```
 
 Conflict policy for THIS fork (differs from the upstream template's
-"prefer upstream"): in files this fork deliberately owns
-(`references/vault-schema.md`, `references/claude-md-template.md`,
-`references/write-rules.md`, `commands/obsidian-init.md`, `SKILL.md` core
-sections), **prefer the fork side**, then port genuinely valuable upstream
-improvements by hand in the same sitting. In everything else, prefer upstream.
-Deleted files (bases templates, later tier-3 commands): on modify/delete conflicts,
-keep deleted (`git rm` again) - the deletion is intentional.
+"prefer upstream"): in files this fork deliberately owns - **everything listed
+in the Deviations section above**: all of `references/` (vault-schema,
+claude-md-template, write-rules, plus ai-first-rules' domain sections),
+`SKILL.md`, all surviving `commands/*.md`, `hooks/obsidian-bg-agent.sh` +
+`.hook.yaml`, `scripts/research/lib/vault.py`, `scripts/quick-install.sh`
+(REPO_URL), the install URLs in `README.md`/`install.sh`, and this `DELTAS.md`
+- **prefer the fork side**, then port genuinely valuable upstream improvements
+by hand in the same sitting. In everything else (core scripts, adapters,
+tests, `hooks/load_vault_context.py`, `validate-ai-first.sh`, CHANGELOG,
+community docs), prefer upstream. Deleted files (bases templates, the 26
+tier-3 commands): on modify/delete conflicts, keep deleted (`git rm` again) -
+the deletion is intentional.
 
 After every merge: re-read this file's Deviations list and spot-check that fork
 edits survived (`git diff upstream/main -- references/ SKILL.md | head`).

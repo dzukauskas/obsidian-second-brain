@@ -10,20 +10,20 @@ This command can run manually or as a scheduled agent. It thinks for you.
 
 1. Read `_CLAUDE.md` first if it exists in the vault root
 2. Read `index.md` to understand all existing pages
-3. Read recent operation log: if `Logs/` exists, read the last 2-3 `Logs/YYYY-MM-DD.md` files; otherwise read `log.md` (last 20 entries)
+3. Read recent operation log: the last 2-3 `logs/YYYY-MM-DD.md` files
 
 4. Scan for synthesis opportunities - spawn parallel subagents:
 
-   - **Cross-source agent**: read all sources ingested in the last 7 days (`raw/`). Find concepts that appear in 2+ unrelated sources. If the same idea shows up in a podcast transcript AND an article AND a daily note - that's a synthesis candidate.
-   
-   - **Entity convergence agent**: scan `wiki/entities/` for people who appear together in multiple contexts but have no explicit connection page. If Person A and Person B keep showing up in the same projects/decisions - write a connection note.
-   
+   - **Cross-source agent**: read sources added to `raw/` and findings in `research/` in the last 7 days. Find concepts that appear in 2+ unrelated sources. If the same mechanism shows up in a guideline AND an article AND a podcast - that's a synthesis candidate.
+
+   - **Cross-domain agent**: scan `wiki/` knowledge pages (genes, biomarkers, supplements, protocols, concepts) for entities that appear together in multiple contexts but have no explicit connection page - e.g. a gene and a biomarker repeatedly co-mentioned without a page linking them.
+
    - **Concept evolution agent**: scan `wiki/concepts/` for ideas that have been updated 3+ times. Track how the concept evolved - write a "Concept Evolution" section showing the timeline of how the user's thinking changed.
-   
+
    - **Orphan rescue agent**: find notes in `wiki/` with no incoming links that contain claims or ideas that SHOULD be linked to existing pages. Create the missing links and explain why.
 
 5. For each synthesis found:
-   - Create `wiki/concepts/Synthesis — Title.md` with:
+   - Create `wiki/concepts/Synthesis - Title.md` (ASCII hyphen) with:
      ```yaml
      ---
      date: YYYY-MM-DD
@@ -36,11 +36,10 @@ This command can run manually or as a scheduled agent. It thinks for you.
    - Document: what pattern was found, which sources/notes it came from (with links), what it means, and a suggested action
    - Link the synthesis page FROM all the source notes it references
 
-6. Update `index.md` with new synthesis pages
-7. Append to the operation log: if `Logs/` exists write `**HH:MM** - synthesize | X synthesis pages created, Y orphans rescued, Z connections found` to `Logs/YYYY-MM-DD.md`; otherwise append `## [YYYY-MM-DD] synthesize | X synthesis pages created, Y orphans rescued, Z connections found` to `log.md`
-8. If a daily note exists for today, add a Synthesis section with a brief summary
+6. Update `index.md` with new synthesis pages (incrementally - regeneration is `/obsidian-init`'s job)
+7. Append `**HH:MM** - synthesize | X synthesis pages created, Y orphans rescued, Z connections found` to `logs/YYYY-MM-DD.md` (lowercase; `log.md` is a pointer - never write entries there)
 
-The vault should generate its own insights. Not just when asked - on its own schedule.
+This command IS the user's explicit ask for synthesis - creating the pages here is consented. Outside this command, synthesis is suggested, never auto-created (see SKILL.md Synthesis Hook). Personal data (`wiki/labs/`, `wiki/dna/`, profile `timeline:`) is read for patterns but never modified.
 
 ---
 

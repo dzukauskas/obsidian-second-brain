@@ -9,14 +9,14 @@ Use the obsidian-second-brain skill. Execute `/obsidian-learn $ARGUMENTS`:
 The optional argument is a scope: `recent` (last 30 days, default), `all` (entire vault), or a topic name.
 
 1. Read `_CLAUDE.md` first if it exists in the vault root
-2. Read `index.md` and recent operation log for vault context (if `Logs/` exists: read the last 2-3 `Logs/YYYY-MM-DD.md` files; otherwise read `log.md`)
+2. Read `index.md` and recent operation log for vault context (read the last 2-3 `logs/YYYY-MM-DD.md` files)
 
 3. Spawn parallel subagents to gather learnings:
 
-   - **Lessons agent**: scan all daily notes for "Lesson learned" sections, "What didn't" sections, evening review insights
-   - **Decisions agent**: read all ADRs in `wiki/decisions/` - extract the rationale and outcome of each
-   - **Reports agent**: read recent emerge/synthesize/connect/challenge reports in `wiki/concepts/` (the auto-generated pattern reports)
-   - **Mistakes agent**: scan dev logs and daily notes for "what didn't work", "wasted time on", "next time", "lesson", phrases indicating learning from failure
+   - **Lessons agent**: scan `logs/` and `brainstorms/` for lessons, reversals, and decided questions
+   - **Decisions agent**: read decision rationale in `TODO.md` (parked decisions with conditions) and recent git commit messages (the vault's decision log) - extract the rationale and outcome of each
+   - **Reports agent**: read recent emerge/synthesize/connect/challenge reports in `wiki/concepts/` (the generated pattern reports)
+   - **Mistakes agent**: scan `logs/` and `brainstorms/` for "what didn't work", "wasted time on", "next time", "lesson", phrases indicating learning from failure
    - **Wins agent**: scan for patterns that worked - "this saved time", "this approach worked", recurring success patterns
 
 4. For each learning found, classify:
@@ -36,7 +36,7 @@ The optional argument is a scope: `recent` (last 30 days, default), `all` (entir
    - Suggest: keep, archive, or convert to history note
 
    ## Superseded Learnings (already replaced)
-   - Old position → New position with ADR reference
+   - Old position -> New position, with the source of the change (commit, brainstorm, TODO entry)
 
    ## Promotion Candidates (appeared 3+ times)
    - Learnings strong enough to become permanent rules in `_CLAUDE.md`
@@ -45,13 +45,11 @@ The optional argument is a scope: `recent` (last 30 days, default), `all` (entir
    ## Top 5 Lessons of the Period
    - Most impactful learnings ranked by frequency × recency × consequence
 
-6. Save the report to `wiki/concepts/YYYY-MM-DD — Learnings Review.md`
-7. Append to the operation log: if `Logs/` exists write `**HH:MM** - learn | X active, Y stale, Z superseded, N promotion candidates` to `Logs/YYYY-MM-DD.md`; otherwise append `## [YYYY-MM-DD] learn | X active, Y stale, Z superseded, N promotion candidates` to `log.md`
-8. Update today's daily note with a brief summary
-9. Offer to:
+6. Save the report to `wiki/concepts/YYYY-MM-DD - Learnings Review.md` (ASCII hyphen, no em dashes)
+7. Append `**HH:MM** - learn | X active, Y stale, Z superseded, N promotion candidates` to `logs/YYYY-MM-DD.md` (lowercase; `log.md` is a pointer - never write entries there)
+8. Offer to:
    - Promote candidates to `_CLAUDE.md` (with user confirmation)
-   - Archive stale learnings (with user confirmation)
-   - Export top 5 as a shareable markdown for content/journaling
+   - Flag stale learnings for the owner to archive (the agent never archives or deletes)
 
 Lessons that aren't reviewed don't compound. This command turns scattered notes into a living rulebook.
 

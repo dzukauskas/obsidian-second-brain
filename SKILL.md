@@ -312,15 +312,9 @@ Parallel subagents route: family facts -> profile `timeline:` appends in `wiki/p
 
 ### `/obsidian-person [name]`
 
-**Creates or updates a person note.**
+**Updates a family profile in `wiki/people/`.**
 
-Steps:
-1. Search the vault for an existing note matching the name (fuzzy - handle typos and partial names)
-2. If found: confirm with user, then update with new info from conversation
-3. If not found: create `People/Full Name.md` with full frontmatter schema
-4. Fill in everything inferable from the conversation: role, company, context, relationship strength, last interaction date
-5. Log the interaction in today's daily note
-6. If a People index file exists, add or update the entry there
+Fuzzy-searches `wiki/people/` and confirms the match. New personal facts append to the profile's `timeline:` (never overwrite); `CRITICAL_FACTS.md` refreshed if an always-loaded fact changed. `wiki/people/` is family profiles only (`relationship: self|spouse|child` - kinship, never strength): creating a new profile means a new family member and needs the owner's confirmation; external people get no person notes (attribute inline in knowledge pages). Updates `index.md` and logs to `logs/YYYY-MM-DD.md`.
 
 ---
 
@@ -332,7 +326,7 @@ Steps:
 1. Run `search(query="...")` with the provided query
 2. Also try variations if results are sparse (synonyms, related terms)
 3. Return results with context: note title, folder, a relevant excerpt, and what type of note it is
-4. If results are ambiguous, group them by type (people, projects, tasks, etc.)
+4. If results are ambiguous, group them by type (people, biomarkers, genes, supplements, protocols, concepts, data notes)
 5. Offer to open, update, or link any of the found notes
 
 Do not just return filenames - return enough context for the user to act.
@@ -350,19 +344,19 @@ Steps:
    - **Links agent**: verify broken links, attempt to resolve them
    - **Duplicates agent**: confirm duplicates are truly the same concept, not just similar names
    - **Frontmatter agent**: identify notes missing required fields by type
-   - **Staleness agent**: check overdue tasks and unfilled template syntax
-   - **Orphans agent**: check orphaned notes and empty folders
-   - **Contradictions agent**: scan Key Decisions and Knowledge/ for claims that conflict or are superseded
+   - **Staleness agent**: check unfilled template syntax and unkept follow-up promises
+   - **Orphans agent**: check orphaned notes and empty folders (expected noise: `raw/` and data notes - the script's exclusions were tuned for the author's vault)
+   - **Contradictions agent**: scan `wiki/` knowledge pages for conflicting claims - report both sides, never resolve
    - **Concept gaps agent**: find terms mentioned 3+ times without a dedicated page
-   - **Stale claims agent**: flag Knowledge/ notes older than 6 months on fast-moving topics
+   - **Stale claims agent**: flag `wiki/` knowledge pages older than 6 months on fast-moving topics
 4. Merge agent results and group by severity:
    - 🔴 Critical: broken links, unfilled template syntax, contradictions
-   - 🟡 Warning: duplicates, stale tasks, missing frontmatter, stale claims, concept gaps
+   - 🟡 Warning: duplicates, missing frontmatter, stale claims, concept gaps
    - ⚪ Info: orphaned notes, empty folders
 5. Present a clean summary with counts per category
 6. For safe fixes (missing frontmatter, obvious duplicates, creating pages for concept gaps), offer to fix them automatically
-7. For destructive fixes (archiving, merging, resolving contradictions), list them and ask for explicit confirmation before touching anything
-8. Append to `log.md` with severity counts
+7. For destructive fixes, list them and ask for explicit confirmation; `raw/`, `wiki/labs/`, and `wiki/dna/` are never touched
+8. Append severity counts to `logs/YYYY-MM-DD.md`
 
 ---
 
@@ -376,20 +370,9 @@ Parallel subagents scan the knowledge folders (`wiki/concepts/`, `wiki/protocols
 
 ### `/obsidian-synthesize`
 
-**Automatic synthesis - the vault thinks for itself.**
+**Vault-wide synthesis on explicit ask.**
 
-Can run manually or as a scheduled agent. Scans the vault for patterns nobody asked about.
-
-Steps:
-1. Read `index.md` and `log.md` (last 20 entries) for recent activity
-2. Spawn parallel subagents:
-   - **Cross-source agent**: find concepts appearing in 2+ unrelated sources from the last 7 days
-   - **Entity convergence agent**: find people who appear together in multiple contexts but have no connection page
-   - **Concept evolution agent**: find concepts updated 3+ times and document how thinking changed
-   - **Orphan rescue agent**: find unlinked notes that should be connected to existing pages
-3. For each pattern: create `wiki/concepts/Synthesis — Title.md` with evidence, interpretation, and suggested action
-4. Link synthesis pages FROM all source notes they reference
-5. Update `index.md`, `log.md`, and today's daily note
+Invoking this command IS the consent to create synthesis pages (outside it, synthesis is suggested, never auto-created). Parallel subagents scan `raw/` + `research/` for cross-source concepts, `wiki/` knowledge pages for co-occurring entities without a connection page, `wiki/concepts/` for evolved ideas, and orphaned notes. Each pattern becomes `wiki/concepts/Synthesis - Title.md` (ASCII hyphen) with evidence, interpretation, and suggested action, linked FROM its source notes. Personal data is read for patterns but never modified. `index.md` updated incrementally; log entry to `logs/YYYY-MM-DD.md`.
 
 ---
 
@@ -402,27 +385,15 @@ Steps:
 2. Output as JSON (default) to `_export/vault-snapshot.json` or markdown to `_export/vault-snapshot.md`
 3. The snapshot is a flat, structured representation of the vault - no folder structure knowledge needed
 4. Any AI tool, automation, or agent can read this file and understand the vault
-5. Append to `log.md`
+5. Append to `logs/YYYY-MM-DD.md`
 
 ---
 
 ### `/obsidian-init`
 
-**Bootstraps `_CLAUDE.md` for the vault - the operating manual.**
+**Generates the vault's navigation and logging infrastructure.**
 
-Steps:
-1. Call `list_files_in_vault()` to map the full structure
-2. Spawn parallel subagents to discover vault context simultaneously:
-   - **Dashboard agent**: read `Home.md` or equivalent dashboard
-   - **Templates agent**: read all files in `Templates/`
-   - **Boards agent**: read all files in `Boards/`
-   - **Samples agent**: read one existing note per major folder to capture naming conventions and frontmatter patterns
-3. Merge all agent results into a complete picture of the vault
-4. Generate a complete `_CLAUDE.md` using the template in `references/claude-md-template.md`, filled with real values from the vault
-5. Write it to `_CLAUDE.md` at the vault root via `append_content("_CLAUDE.md", content)`
-6. Confirm what was written and tell the user to restart their Claude session so the new file takes effect
-
-If `_CLAUDE.md` already exists: show a diff of what would change and ask before overwriting.
+Maps the vault, reads `_CLAUDE.md`/`_DOMAIN.md` (authoritative) and note samples, then generates `index.md` (catalog grouped by folder; `raw/` and `research/` contents skipped), the lowercase `logs/` structure, and the `log.md` pointer file. An existing `_CLAUDE.md` is owner-maintained and left untouched - no diff-and-overwrite offer; drafting one from `references/claude-md-template.md` happens only for a brand-new vault, with owner approval. No Bases, no uppercase `Logs/`.
 
 ---
 
@@ -448,15 +419,15 @@ Steps:
 1. Identify the user's current claim, plan, or assumption - from the argument or conversation context
 2. Extract the key premises behind that position
 3. Spawn parallel subagents to search for counter-evidence:
-   - **Decisions agent**: search Key Decisions sections for past decisions that contradicted similar thinking
-   - **Failures agent**: search dev logs, daily notes, and archives for past failures or lessons related to this topic
-   - **Contradictions agent**: search for notes where the user held the opposite position or flagged risks
+   - **Knowledge agent**: search `wiki/` pages for claims and evidence levels that cut against the position
+   - **History agent**: search `logs/`, `brainstorms/`, and `TODO.md` for past reasoning, reversals, or lessons on this topic
+   - **Contradictions agent**: search `## Conflict` sections, opposite positions, and profile `timeline:` data that contradicts the plan
 4. Synthesize a structured "Red Team" analysis:
    - **Your position**: restate the claim
    - **Counter-evidence from your vault**: cite specific notes, dates, and quotes
    - **Blind spots**: what the user might be ignoring based on their own history
    - **Verdict**: consistent with past experience, or does the vault suggest caution?
-5. Log the challenge in today's daily note under a Thinking section
+5. Log the challenge in `logs/YYYY-MM-DD.md`
 
 Do not be agreeable. The entire point is to pressure-test. Cite specific vault files.
 
@@ -469,18 +440,18 @@ Do not be agreeable. The entire point is to pressure-test. Cite specific vault f
 Steps:
 1. Determine the date range from the argument (default: last 30 days)
 2. Spawn parallel subagents to scan vault content:
-   - **Daily notes agent**: extract recurring topics, complaints, observations, energy patterns
-   - **Dev logs agent**: extract repeated blockers, tools, architectural patterns
-   - **Decisions agent**: look for directional trends across project notes
-   - **Ideas agent**: look for thematic clusters in Ideas/ notes
+   - **Operations agent**: recurring topics and open loops in `logs/`
+   - **Timeline agent**: recurring symptoms, interventions, and patterns across `wiki/people/` timelines
+   - **Knowledge agent**: thematic clusters in recently touched `wiki/` pages
+   - **Staging agent**: topics researched in `research/` but never promoted
 3. Identify:
    - **Recurring themes**: topics that appeared 3+ times without being named as a priority
    - **Emotional patterns**: what energizes vs. drains (based on language)
    - **Unnamed conclusions**: things the notes imply but never state outright
    - **Emerging directions**: where the vault suggests the user is heading
 4. Present a "Pattern Report" - each pattern with evidence (cited notes), interpretation, and suggested action
-5. Offer to save the report to `Ideas/` or a relevant project note
-6. Log a summary in today's daily note
+5. Offer once to save the report to `wiki/concepts/`
+6. Log a summary in `logs/YYYY-MM-DD.md`
 
 The goal is insight the user cannot see themselves. Surface what they haven't named yet.
 
@@ -502,8 +473,8 @@ Steps:
    - **Transfer opportunities**: what works in A that could apply to B
    - **Collision ideas**: new concepts that only exist at the intersection
 5. Present 3-5 specific, actionable connections - not vague analogies but concrete ideas
-6. Offer to save the best connections to `Ideas/` with links to both source domains
-7. Log the connection exercise in today's daily note
+6. Offer once to save the best connections to `wiki/concepts/` with `[[wikilinks]]` to both source domains
+7. Log the connection exercise in `logs/YYYY-MM-DD.md`
 
 The value is in unexpected links. If the connection is obvious, dig deeper.
 
@@ -534,16 +505,16 @@ Topic-driven (unlike `/obsidian-synthesize`, which scans the whole vault unpromp
 Uses token budgets to avoid loading the entire vault. Start light, go deeper only as needed.
 
 Steps:
-1. **L0 - Identity (~200 tokens)**: read `SOUL.md`/`About Me.md` and `CORE_VALUES.md`/`Values.md`
-2. **L1 - Navigation (~1-2K tokens)**: read `index.md` (vault catalog) and `log.md` (last 10 entries)
-3. **L2 - Current State (~2-5K tokens)**: read `Home.md`/`Dashboard.md`, today's daily note, last 3 daily notes, active kanban boards, previous session digests
-4. **L3 - Deep Context (on demand, ~5-20K tokens)**: only load if needed - active project notes, full Knowledge/ articles, recently mentioned people
+1. **L0 - Identity (~200 tokens)**: read `SOUL.md`, `CRITICAL_FACTS.md`, and `PINNED.md` if present
+2. **L1 - Navigation (~1-2K tokens)**: read `index.md` (vault catalog) and today's + yesterday's `logs/YYYY-MM-DD.md`
+3. **L2 - Current State (~2-5K tokens)**: read `TODO.md` (parked decisions), the freshest `brainstorms/` thread, and skim `research/` staging awaiting triage
+4. **L3 - Deep Context (on demand, ~5-20K tokens)**: only load if needed - relevant `wiki/people/` profiles, `wiki/` knowledge pages with their `raw/` sources, `_DOMAIN.md` for data schemas
 
 Present a brief status after L0-L2 (do NOT load L3 unless needed):
 - **Who I am to you**: persona and communication style
-- **Your current priorities**: top 3-5 active threads (from index.md + boards)
-- **Open threads from last session**: anything unfinished (from log.md + daily notes)
-- **Overdue / needs attention**: stale tasks or projects
+- **Open infrastructure work**: top items from `TODO.md`
+- **Open threads**: anything unfinished (from the operation log + brainstorms)
+- **Awaiting your triage**: unreviewed `research/` staging notes
 - **Today so far**: what's already logged
 
 Keep output concise - this is a boot-up sequence, not a report.
@@ -582,7 +553,7 @@ may not be found otherwise.
 
 A background agent that fires automatically whenever Claude compacts the conversation context. It reads the session summary and propagates everything worth preserving to the vault - no user action required.
 
-**What it does:** After each compaction, a headless `claude -p` subprocess wakes up, reads `_CLAUDE.md`, scans the summary for vault-worthy items (people, projects, decisions, tasks, dev work, ideas), and writes updates everywhere they belong - people notes, project notes, dev logs, kanban boards, and today's daily note.
+**What it does:** After each compaction, a headless `claude -p` subprocess wakes up, reads `_CLAUDE.md`, scans the summary for durable facts, and routes them per the fork's rules: health facts about family members append to profile `timeline:` entries, sourced knowledge updates existing `wiki/` knowledge pages, and everything else surfaces as a "needs owner decision" entry in `logs/YYYY-MM-DD.md` - never filed, never new structure. It is triple-gated (env var, enable flag, AND the session's cwd must be the vault) and ships disabled.
 
 **How it works:**
 1. `PostCompact` hook fires in Claude Code after context compaction
@@ -703,7 +674,7 @@ The default install path (`scripts/setup.sh`) writes `OBSIDIAN_VAULT_PATH` into 
 
 3. Restart Claude Code (or open a new session in that directory). All slash commands, hooks, and scripts will now operate on the project-specific vault.
 
-**What this does NOT give you:** isolation within a single vault. The skill has no `--scope` concept - `/obsidian-find`, `/obsidian-recap`, and `/obsidian-emerge` scan the entire configured vault. If you want multiple projects sharing one vault, you can organize them by top-level folders for visual grouping, but commands will still see across folders. A real `--scope` refactor is tracked in discussion threads - open a discussion if this is your use case.
+**What this does NOT give you:** isolation within a single vault. The skill has no `--scope` concept - `/obsidian-find`, `/obsidian-emerge`, and `/vault-deep-synthesis` scan the entire configured vault. If you want multiple areas sharing one vault, you can organize them by top-level folders for visual grouping, but commands will still see across folders.
 
 **Slash commands and hooks are still globally installed.** Only the `OBSIDIAN_VAULT_PATH` env var is per-project. You do not need to re-symlink commands or re-register hooks per repo.
 

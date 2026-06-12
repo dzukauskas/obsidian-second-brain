@@ -14,7 +14,7 @@ Pressure-tests a decision from several independent angles at once. Where `/obsid
    - Otherwise, use 4 generic lenses: the skeptic (what breaks this), the user/customer (who is served or hurt), the operator (can this actually be run/maintained), and the long-game (what does this look like in a year).
 3. For EACH panelist, write an independent verdict: their position, the strongest reason behind it, and what would change their mind. Keep them genuinely distinct - do not let them converge prematurely.
 4. Write a synthesis: where the panel agreed, where it split, and a recommended decision with its main risk. Do not hide the disagreement - the split is the most useful output.
-5. Save to `wiki/concepts/YYYY-MM-DD - panel - <slug>.md` (`type: synthesis`, tagged `[thinking, panel]`), linking any `[[Advisors/...]]` notes and `[[entities/projects]]` the decision touches. Cross-link from today's daily note.
+5. Save to `wiki/concepts/YYYY-MM-DD - panel - <slug>.md` (`type: synthesis`, tagged `[thinking, panel]`), with `[[wikilinks]]` to the people, genes, supplements, protocols, or concepts the decision touches. Append `**HH:MM** - panel | <topic>` to `logs/YYYY-MM-DD.md` (lowercase; `log.md` is a pointer - never write entries there).
 
 ---
 

@@ -134,6 +134,21 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   and loose ideas report-only); daily-note and social-media steps removed;
   logs to lowercase `logs/`; ambiguous routing asks the owner. SKILL.md
   section synced.
+- Surviving commands SCRUBBED of deleted-structure references (2026-06-12,
+  tier 3): person (wiki/people family-only, kinship enum, timeline appends),
+  world (L0-L3 retargeted to PINNED/TODO/brainstorms/research staging),
+  emerge + challenge + connect (subagents retargeted to logs/, timelines,
+  wiki pages, research/ staging; saves offered to wiki/concepts), learn
+  (decisions from TODO.md + git history instead of wiki/decisions ADRs),
+  synthesize (cross-domain agent instead of wiki/entities; explicit-ask
+  consent note), health (Knowledge/ -> wiki pages; raw/ + data notes never
+  touched; orphan noise documented), export + visualize (examples retargeted,
+  zukauskenOS names), vault-deep-synthesis (greps wiki/ + research/ + raw/,
+  Lithuanian + English term variants), create-command (category text, ASCII
+  footer in the template). All daily-note steps replaced with logs/ entries;
+  all `log.md` fallbacks removed; em-dash filename examples now ASCII.
+  Matching SKILL.md sections synced, including the stale /obsidian-init
+  section left over from tier 1.
 
 ## Personal conventions
 

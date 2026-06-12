@@ -10,34 +10,32 @@ Use the obsidian-second-brain skill. Execute `/obsidian-world`:
 
 2. Load context progressively - start light, go deeper only as needed:
 
-   **L0 - Identity (~170 tokens)**
-   Read these files if they exist (search for them if paths differ):
-   - `SOUL.md` or `About Me.md` - who the user is, communication style, thinking preferences
-   - `CRITICAL_FACTS.md` - ~120 tokens of always-needed context: timezone, manager, location, company, role
-   - `CORE_VALUES.md` or `Values.md` - decision-making principles and non-negotiables
+   **L0 - Identity (~200 tokens)**
+   Read these files if they exist:
+   - `SOUL.md` - who the owner is, communication style, thinking preferences
+   - `CRITICAL_FACTS.md` - ~150 tokens of always-needed context (family, key health facts, location)
+   - `PINNED.md` - cross-session working memory, if present
 
    **L1 - Navigation (~1-2K tokens)**
    - Read `index.md` - the catalog of all vault pages. This tells Claude what exists without loading everything.
-   - Read recent operation log (last 10 entries): if `Logs/` exists, read today's and yesterday's `Logs/YYYY-MM-DD.md`; otherwise read `log.md`
+   - Read recent operation log (last 10 entries): today's and yesterday's `logs/YYYY-MM-DD.md`
 
    **L2 - Current State (~2-5K tokens)**
-   - Read `Home.md` or `Dashboard.md` - current top-level priorities
-   - Read today's daily note (if it exists) for what's already in progress
-   - Read the last 3 daily notes for recent momentum and open threads
-   - Scan active kanban boards for in-progress and overdue items
-   - Check for session digests from previous conversations (look for "End of Day" or "Session Digest" sections)
+   - Read `TODO.md` - deferred infrastructure work and parked decisions with conditions
+   - Read the most recent `brainstorms/` file if one was touched in the last 7 days (open question threads)
+   - Skim `research/` staging for unreviewed findings awaiting the owner's triage
 
    **L3 - Deep Context (on demand, ~5-20K tokens)**
    - Only load if needed for a specific question or task
-   - Read active project notes (status: active) for current goals and blockers
-   - Read full source articles from Knowledge/ if the user asks about a specific topic
-   - Identify key people interacted with recently (last 7 days of daily notes)
+   - Read the relevant `wiki/people/` profile(s) - current facts up top, `timeline:` for history
+   - Read the relevant `wiki/` knowledge pages and their `raw/` sources if the user asks about a specific topic
+   - Read `_DOMAIN.md` when the task touches lab/genetic data schemas
 
 3. Present a brief status after L0-L2 (do NOT load L3 unless needed):
    - **Who I am to you**: confirm the persona and communication style
-   - **Your current priorities**: top 3-5 active threads (from index.md + boards)
-   - **Open threads from last session**: anything unfinished (from operation log + daily notes)
-   - **Overdue / needs attention**: tasks or projects that are stale
+   - **Open infrastructure work**: top items from `TODO.md`
+   - **Open threads**: unfinished things from the operation log and recent brainstorms
+   - **Awaiting your triage**: unreviewed `research/` staging notes
    - **Today so far**: what's already logged today
 
 Keep output concise - this is a boot-up sequence, not a report. The user should glance at it and say "yes, Claude is up to speed" and start working immediately.

@@ -30,17 +30,17 @@ The optional argument is the format: `json` (default) or `markdown`.
    **JSON** (default):
    ```json
    {
-     "vault": "Eugeniu's Vault",
-     "exported": "2026-04-07",
+     "vault": "zukauskenOS",
+     "exported": "2026-06-12",
      "total_notes": 238,
      "notes": [
        {
-         "path": "wiki/entities/Eric Siu.md",
-         "title": "Eric Siu",
-         "type": "entity",
-         "summary": "CEO of Single Grain...",
-         "links_to": ["Single Grain", "Centralized API Gateway"],
-         "tags": ["entity", "person"]
+         "path": "wiki/biomarkers/Ferritin.md",
+         "title": "Ferritin",
+         "type": "biomarker",
+         "summary": "Iron storage marker...",
+         "links_to": ["Iron protocol", "Darius"],
+         "tags": ["biomarker"]
        }
      ]
    }
@@ -51,7 +51,7 @@ The optional argument is the format: `json` (default) or `markdown`.
    A flat markdown file with every note listed with its metadata and summary.
    Save to `_export/vault-snapshot.md`
 
-5. Append to the operation log: if `Logs/` exists write `**HH:MM** - export | Vault snapshot exported (format, N notes)` to `Logs/YYYY-MM-DD.md`; otherwise append `## [YYYY-MM-DD] export | Vault snapshot exported (format, N notes)` to `log.md`
+5. Append `**HH:MM** - export | Vault snapshot exported (format, N notes)` to `logs/YYYY-MM-DD.md` (lowercase; create the day file with frontmatter if missing - `log.md` is a pointer, never write entries there)
 
 This file is the bridge between your vault and any other AI tool, automation, or agent. They don't need to know your folder structure. They read the snapshot.
 

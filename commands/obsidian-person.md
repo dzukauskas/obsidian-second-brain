@@ -9,12 +9,11 @@ Use the obsidian-second-brain skill. Execute `/obsidian-person $ARGUMENTS`:
 The argument is a person's name - handle typos and partial matches.
 
 1. Read `_CLAUDE.md` first if it exists in the vault root
-2. Search the vault for an existing note matching the name (fuzzy - handle typos and partial names)
-3. If found: confirm with user, then update with new info from conversation
-4. If not found: create `People/Full Name.md` with full frontmatter schema
-5. Fill in everything inferable from the conversation: role, company, context, relationship strength, last interaction date
-6. Log the interaction in today's daily note
-7. If a People index file exists, add or update the entry there
+2. Search `wiki/people/` for an existing profile matching the name (fuzzy - handle typos and partial names)
+3. If found: confirm with user, then update - new personal facts go into the `timeline:` array (`fact`, `from`, `until`, `learned`, `source`); never overwrite existing entries. Refresh `CRITICAL_FACTS.md` if an always-loaded fact changed.
+4. If not found: **`wiki/people/` is family profiles only** (`relationship: self | spouse | child` - kinship, never relationship strength). Creating a new profile means a new family member - confirm with the owner before creating. External people (clinicians, authors, podcast guests) get NO person notes; attribute them inline in the relevant knowledge pages.
+5. Fill in what the conversation actually stated: `relationship`, `born`, timeline facts with dates and sources - per the vault's `_DOMAIN.md` person schema
+6. Update the profile's entry in `index.md` if it changed; append `**HH:MM** - person | <name> updated` to `logs/YYYY-MM-DD.md` (lowercase; create the day file with frontmatter if missing - `log.md` is a pointer, never write entries there)
 
 If the name has a typo or is approximate, search the vault, show what was found, and confirm before proceeding. Never silently create a note with a misspelled name.
 

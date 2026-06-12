@@ -21,8 +21,8 @@ The optional argument is a scope: a project name, entity name, topic, or "full" 
    ```json
    {
      "nodes": [
-       {"id": "1", "type": "file", "file": "wiki/entities/Eric Siu.md", "x": 0, "y": 0, "width": 250, "height": 60},
-       {"id": "2", "type": "file", "file": "wiki/projects/Centralized API Gateway.md", "x": 300, "y": 0, "width": 250, "height": 60}
+       {"id": "1", "type": "file", "file": "wiki/people/Darius.md", "x": 0, "y": 0, "width": 250, "height": 60},
+       {"id": "2", "type": "file", "file": "wiki/biomarkers/Ferritin.md", "x": 300, "y": 0, "width": 250, "height": 60}
      ],
      "edges": [
        {"id": "e1", "fromNode": "1", "toNode": "2"}
@@ -32,8 +32,8 @@ The optional argument is a scope: a project name, entity name, topic, or "full" 
 
    Layout rules:
    - **Hub nodes** (most links) go in the center, larger
-   - **Cluster by type**: entities on the left, projects top-right, concepts bottom-right, daily notes bottom
-   - **Color by type**: entities = blue, projects = green, concepts = purple, daily = gray, sources = orange
+   - **Cluster by type**: people on the left, genes/biomarkers top-right, supplements/protocols/concepts bottom-right, data notes (labs/dna) bottom
+   - **Color by type**: people = blue, genes/biomarkers = green, supplements/protocols = purple, concepts = gray, data notes = orange
    - **Edge thickness** = number of connections between two nodes (thicker = stronger relationship)
    - **Orphan nodes** placed at the edges with a red border (easy to spot)
 
@@ -47,7 +47,7 @@ The optional argument is a scope: a project name, entity name, topic, or "full" 
    - **Clusters** - groups of tightly connected notes, named by their hub. Note any cluster with <3 cross-cluster edges (those are silos).
    - **Centrality skew** - if one node holds >25% of total edges, call it out as a single point of failure for navigation.
 
-7. Append to the operation log: if `Logs/` exists write `**HH:MM** - visualize | Canvas generated - X nodes, Y edges, Z orphans` to `Logs/YYYY-MM-DD.md`; otherwise append `## [YYYY-MM-DD] visualize | Canvas generated — X nodes, Y edges, Z orphans` to `log.md`
+7. Append `**HH:MM** - visualize | Canvas generated - X nodes, Y edges, Z orphans` to `logs/YYYY-MM-DD.md` (lowercase; create the day file with frontmatter if missing - `log.md` is a pointer, never write entries there)
 
 The user can open the `.canvas` file in Obsidian to visually explore their vault's knowledge graph.
 

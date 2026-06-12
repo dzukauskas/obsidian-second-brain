@@ -22,8 +22,8 @@ Two arguments required: the two topics, domains, or note names to connect. If on
    - **Transfer opportunities**: what works in A that could be applied to B
    - **Collision ideas**: new concepts that only exist at the intersection of both
 6. Present 3-5 specific, actionable connections - not vague analogies but concrete ideas the user could act on
-7. Offer to save the best connections to `Ideas/` with links to both source domains
-8. Log the connection exercise in today's daily note
+7. Offer to save the best connections to `wiki/concepts/` with `[[wikilinks]]` to both source domains (one offer - the user decides)
+8. Append `**HH:MM** - connect | <A> x <B>` to `logs/YYYY-MM-DD.md` (lowercase; `log.md` is a pointer - never write entries there)
 
 The value is in unexpected links. If the connection is obvious, dig deeper. The best output makes the user say "I never thought of it that way."
 

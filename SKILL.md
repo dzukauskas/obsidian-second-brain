@@ -351,30 +351,6 @@ Do not just return filenames - return enough context for the user to act.
 
 ---
 
-### `/obsidian-project [name]`
-
-**Creates or updates a project note.**
-
-Steps:
-1. Search the vault for an existing project matching the name (fuzzy - handle typos)
-2. If found: show what was found, confirm, then update with new info from conversation
-3. If not found: create `Projects/Project Name.md` with full frontmatter schema (`date`, `tags: [project]`, `status: active`, `job`)
-4. Fill in everything inferable from the conversation: description, goals, key people, current status
-5. Add a card to the relevant kanban board in the `📥 Backlog` or `🔨 In Progress` column
-6. Link from today's daily note
-
----
-
-### `/obsidian-projects [optional: project name]`
-
-**Live status overview across all tracked projects.**
-
-Reads `_CLAUDE.md` for the projects folder, then scans it for notes with `type: project` or a `repo:` field. For each project, spawns a parallel subagent that runs three checks: reads the vault note (status, last activity, next action, blockers), runs `git log` and `git status` if a `repo:` path is set, and looks for `NOTES.md` / `TODO.md` in the repo root. Merges the three into one status block (active / stalled / idle / blocked / archived inferred from activity recency), prints the full overview to the conversation ordered active-first, then injects a `## Last overview` section into each project note.
-
-If a project name argument is given, shows deep context for that one project only.
-
----
-
 ### `/obsidian-health`
 
 **Runs a vault health check and summarizes findings.**
@@ -459,14 +435,6 @@ Steps:
 6. Confirm what was written and tell the user to restart their Claude session so the new file takes effect
 
 If `_CLAUDE.md` already exists: show a diff of what would change and ask before overwriting.
-
----
-
-### `/obsidian-architect`
-
-**Scans a codebase and writes a maintained set of architecture notes into the vault - overview, per-module notes, key decisions. Re-runnable.**
-
-Hybrid command: `scripts/architect_scan.py` does a deterministic scan (stack, modules, dependencies, entry points, git commit) and emits JSON; Claude synthesizes the prose, rationale, a Mermaid diagram, and likely personas, then writes AI-first notes under `Projects/<name>/Architecture/` (`type: architecture-overview` + `type: architecture-module`). Pulls decision candidates from `scripts/mine_commit_decisions.py`. Refresh is the same command re-run: it uses sentinel markers (`<!-- @generated -->` / `<!-- @user -->`, see `references/write-rules.md`) so re-running updates only the generated blocks and never clobbers your hand-edits. For builders who want their code projects documented in the same brain as their ideas and decisions.
 
 ---
 
@@ -566,14 +534,6 @@ A multi-persona complement to `/obsidian-challenge` (which red-teams from one st
 **Cross-references everything the vault knows about one topic: agreements, contradictions, stale claims, coverage gaps.**
 
 Topic-driven (unlike `/obsidian-synthesize`, which scans the whole vault unprompted). Pure vault, no network. Greps and reads every note touching the topic, then consolidates into what the vault agrees on, where notes contradict (surfaced, not resolved - that is `/obsidian-reconcile`), what looks stale, and what is missing. Saves a `type: synthesis` note; never modifies the sources.
-
----
-
-### `/idea-discovery`
-
-**Ranks 3-5 next-direction candidates from ungraduated ideas, open project questions, and orphan research.**
-
-Answers "what is worth doing next" from vault material. Distinct from `/obsidian-emerge` (names unstated patterns) and `/obsidian-graduate` (promotes one chosen idea). Ranks candidates by a stated heuristic (recency, pull, momentum) and gives the smallest next step for each. Does not auto-graduate.
 
 ---
 

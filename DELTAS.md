@@ -122,6 +122,11 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
     unreachable without the commands, keeps tests green and upstream merges
     small) - including notebooklm.py with its own stale Research/ paths, now
     dead code.
+  - Project family (4): obsidian-project, -projects, -architect,
+    idea-discovery. No Projects/ or wiki/projects structure exists (decided
+    2026-06-12: skip), the owner does not document codebases, and Ideas/ does
+    not exist. `scripts/architect_scan.py` and `mine_commit_decisions.py` stay
+    (inert without the command, same logic as the research scripts).
 
 ## Personal conventions
 

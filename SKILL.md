@@ -322,21 +322,6 @@ Do not ask for guidance on where to save things - infer it. Only ask if somethin
 
 ---
 
-### `/obsidian-daily`
-
-**Creates or updates today's daily note.**
-
-Steps:
-1. Check if `Daily/YYYY-MM-DD.md` exists for today
-2. If not: read `Templates/Daily Note.md`, fill in date fields, create the file
-3. Scan the current conversation for anything relevant to today: tasks in progress, people mentioned, decisions made, what's being worked on
-4. Pre-fill or update the note's sections with that context
-5. If the note already exists, inject new content into the right sections rather than overwriting
-
-Return the path of the daily note when done.
-
----
-
 ### `/obsidian-agenda`
 
 **Reads Google Calendar and writes a re-derivable AI-first snapshot to the vault.** Claude Code only (needs the Google Calendar MCP).
@@ -361,47 +346,11 @@ Resolve the event (`last`, `next`, `today`, `event-id:<id>`, or fuzzy title), cr
 
 ---
 
-### `/obsidian-recurring`
-
-**Tracks a recurring obligation (payment, filing, ops) with a cadence and a computed next-due date.**
-
-State the obligation and cadence (e.g. "pay social benefits, monthly day 20"). Searches for an existing note first, then builds a `type: recurring-task` note with What / Cadence / Blockers / History sections and frontmatter (`cadence`, `owner`, `blocker`, `next-due`, optional `amount`). Adds a board card for the next occurrence; on each completion, appends a History row and advances `next-due`. Fills the gap that `/obsidian-task` (one-shot) leaves.
-
----
-
 ### `/obsidian-calendar`
 
 **Reconciles the vault against your calendar - flags commitments implied by notes that are not scheduled.** Claude Code only (needs the Google Calendar MCP).
 
 Window argument (`today` / `this week` / `this month`, default this week). Pulls the calendar, then gathers vault-implied commitments by listing and grepping (project `next_action`s and deadlines, due tasks, commitments in recent daily notes, fixed dates in `CRITICAL_FACTS.md`), and reports the gap in two directions. **Flag only - never adds, moves, or changes calendar events.** The inverse of `/obsidian-daily`'s calendar pull.
-
----
-
-### `/obsidian-log`
-
-**Logs a work or dev session to the vault.**
-
-Steps:
-1. Infer the project from conversation context - search the vault if needed to find the right project note
-2. Read `Templates/Dev Log.md` (or `Templates/Work Log.md` if it exists)
-3. Fill in: date, project, what was worked on, problems encountered, decisions made, next steps - all inferred from the conversation
-4. Save to `Dev Logs/YYYY-MM-DD — Project Name.md`
-5. Inject a link into the project note's Recent Activity section
-6. Inject a link into today's daily note Work section
-
----
-
-### `/obsidian-task [description]`
-
-**Adds a task to the vault and the right kanban board.**
-
-Steps:
-1. Parse the task from the argument or from recent conversation context if no argument given
-2. Infer: priority (🔴/🟡/🟢), due date, linked project, linked person
-3. Search for the right kanban board - use `_CLAUDE.md` board list or search `Boards/`
-4. Add the task card to the correct column (`📋 This Week` or `📥 Backlog` depending on due date)
-5. Create a task note in `Tasks/` if the task is substantial (more than a one-liner)
-6. Link the task from the relevant project note and today's daily note
 
 ---
 
@@ -419,33 +368,6 @@ Steps:
 
 ---
 
-### `/obsidian-decide [optional: topic]`
-
-**Extracts and logs decisions from the conversation.**
-
-Steps:
-1. Scan the conversation for decisions made - look for conclusions, choices, commitments, direction changes
-2. If a topic argument is given, focus on decisions related to that topic
-3. Find the relevant project note(s) - search if needed
-4. Append each decision to the project note's `## Key Decisions` section with date
-5. Log a summary in today's daily note
-6. If a decision affects multiple projects, log it in all of them
-
----
-
-### `/obsidian-capture [optional: idea text]`
-
-**Quick idea capture with zero friction.**
-
-Steps:
-1. Take the argument as the idea, or pull the most recent idea/thought from the conversation
-2. Search `Ideas/` for a related existing note - if found, append to it
-3. If new: create `Ideas/Title.md` with minimal frontmatter (`date`, `tags: [idea]`)
-4. Write the idea with any supporting context from the conversation
-5. Add a brief mention in today's daily note under an Ideas or Captures section
-
----
-
 ### `/obsidian-find [query]`
 
 **Smart vault search.**
@@ -458,54 +380,6 @@ Steps:
 5. Offer to open, update, or link any of the found notes
 
 Do not just return filenames - return enough context for the user to act.
-
----
-
-### `/obsidian-recap [today|week|month]`
-
-**Summarizes a time period from the vault.**
-
-Steps:
-1. Determine the date range from the argument (default: `week` if not specified)
-2. List all daily notes in the range with `list_files_in_dir("Daily/")`
-3. Spawn parallel subagents - one per daily note - to read and extract key points from each simultaneously
-4. Also spawn parallel agents to read dev logs and completed kanban tasks from the same period
-5. Synthesize all agent results: what was worked on, decisions made, people interacted with, tasks completed, ideas captured
-6. Present as a clean narrative summary - not a raw dump of note content
-
----
-
-### `/obsidian-review`
-
-**Generates a structured weekly or monthly review note.**
-
-Steps:
-1. Ask: weekly or monthly? (or infer from context)
-2. Read daily notes and dev logs for the period
-3. Read active projects and check for status changes
-4. Read completed tasks from kanban boards
-5. Draft a review note using `Templates/Review.md` if it exists, otherwise use a standard structure:
-   - What I accomplished
-   - Key decisions made
-   - People I worked with
-   - What I learned
-   - What to carry forward
-6. Save to `Reviews/YYYY-MM-DD — Weekly Review.md` (or Monthly)
-7. Link from the last daily note of the period
-
----
-
-### `/obsidian-board [optional: board name]`
-
-**Shows or updates a kanban board.**
-
-Steps:
-1. If a board name is given, search `Boards/` for it (fuzzy match)
-2. If no name given, list available boards and ask which one
-3. Read and display the current board state: columns, item counts, overdue items (past `@{date}`)
-4. Ask if the user wants to make updates - if yes, infer changes from conversation context
-5. Move completed items to ✅ Done with strikethrough, add new items in the right column
-6. Flag any items that are overdue or have been in the same column for more than a week
 
 ---
 
@@ -711,29 +585,6 @@ The value is in unexpected links. If the connection is obvious, dig deeper.
 
 ---
 
-### `/obsidian-graduate`
-
-**Promotes an idea fragment into a full project spec with tasks, board entries, and structure.**
-
-Steps:
-1. If argument given: search `Ideas/`, daily notes, and captures for a matching idea (fuzzy)
-2. If no argument: list recent ideas (last 14 days) and ask the user to pick one
-3. Read the full idea note and any linked notes for context
-4. Research the vault for related content: overlapping projects, related people, past decisions, similar ideas explored before
-5. Generate a full project spec:
-   - **Project note** in `Projects/` with complete frontmatter (status: planning, linked idea)
-   - **Goals**: 3-5 concrete outcomes
-   - **Key tasks**: broken into phases with priorities
-   - **Open questions**: what still needs answering
-   - **Related notes**: links to everything relevant
-6. Add cards to the relevant kanban board
-7. Update the original idea note: add `status: graduated` and link to the new project
-8. Link the new project from today's daily note
-
-The idea doesn't die - it evolves. The original note stays as the origin story.
-
----
-
 ### `/obsidian-panel`
 
 **Convenes a panel of distinct perspectives on a decision - one independent verdict per lens, then a synthesis.**
@@ -783,29 +634,6 @@ Keep output concise - this is a boot-up sequence, not a report.
 
 If identity files don't exist, offer to create them by asking 5-7 quick questions about the user's role, values, and preferences.
 If `index.md` doesn't exist, offer to run `/obsidian-init` to generate it.
-
----
-
-### `/obsidian-adr`
-
-**Generates a decision record when the vault structure changes.**
-
-Steps:
-1. Identify the structural decision from the argument or conversation context
-2. Create `Knowledge/ADR-YYYY-MM-DD — Title.md` with:
-   - **Decision**: one-line summary
-   - **Context**: what prompted this
-   - **Options Considered**: 2-3 alternatives evaluated
-   - **Rationale**: why this option won
-   - **Consequences**: what changed - notes created, moved, or restructured
-   - **Related**: links to affected notes
-3. Update the relevant project note's Key Decisions section with a link to the ADR
-4. Update `index.md` and append to `log.md`
-5. Link from today's daily note
-
-The vault knows why it's structured the way it is. When a future session asks "why?" - the ADR has the answer.
-
-Can also be triggered automatically by `/obsidian-graduate`, `/obsidian-health` structural fixes, or folder reorganizations. In those cases, offer to create an ADR - don't force it.
 
 ---
 
@@ -959,134 +787,10 @@ No hard caps. No blocking. No per-call confirmation prompts. Trust the user to m
 
 ---
 
-## Scheduled Agents
-
-Four autonomous agents designed to run on a schedule with no user intervention. Each runs a focused vault operation at a set time, then stops. They are conservative by default - they never delete or archive anything autonomously, and they never ask the user questions mid-run.
-
-Set these up once using the `/schedule` skill in Claude Code.
-
----
-
-### `obsidian-morning` - Daily at 8:00 AM
-
-**Creates today's daily note and surfaces what needs attention.**
-
-Prompt to schedule:
-```
-Read _CLAUDE.md. Create today's daily note in Daily/ using the Daily Note template.
-Pull in any tasks from kanban boards that are due today or overdue.
-List any projects with status active that have no recent activity in the last 7 days.
-Do not ask questions — infer everything from the vault. Save and stop.
-```
-
-Setup:
-```
-/schedule obsidian-morning — daily 8:00 AM
-```
-
----
-
-### `obsidian-nightly` - Daily at 10:00 PM
-
-**Sleeptime consolidation - the vault gets smarter overnight.**
-
-This agent does more than close the day. It actively consolidates and improves the vault while you sleep.
-
-Prompt to schedule:
-```
-Read _CLAUDE.md. This is a sleeptime consolidation pass — the vault should be smarter when the user wakes up.
-
-Phase 1 — Close the day:
-- Read today's daily note. Append a ## End of Day section with a 3-5 bullet summary.
-- Move any completed kanban tasks to Done.
-
-Phase 2 — Reconcile:
-- Scan wiki/entities/ for outdated roles, companies, or descriptions that conflict with newer daily notes.
-- Scan wiki/concepts/ for claims contradicted by recently ingested sources.
-- Auto-resolve clear winners. Flag ambiguous ones in wiki/decisions/.
-
-Phase 3 — Synthesize:
-- Scan sources ingested today and yesterday. Find concepts that appear in 2+ unrelated sources.
-- If patterns found: create wiki/concepts/Synthesis — Title.md with evidence and interpretation.
-
-Phase 4 — Heal:
-- Find notes created today with no incoming links. Add links from relevant existing pages.
-- Check if any entity pages reference old timeline entries without an "until" date that should be closed.
-- Rebuild index.md to reflect today's changes.
-
-Phase 5 — Log:
-- Append to log.md: ## [YYYY-MM-DD] nightly | End of day + X reconciled, Y synthesized, Z orphans linked
-
-Do not ask questions. Do not fix anything destructive — only add, update, link. Save and stop.
-```
-
-Setup:
-```
-/schedule obsidian-nightly — daily 10:00 PM
-```
-
----
-
-### `obsidian-weekly` - Every Friday at 6:00 PM
-
-**Generates a weekly review note from the vault.**
-
-Prompt to schedule:
-```
-Read _CLAUDE.md. Run /obsidian-recap week to gather this week's activity.
-Generate a weekly review note using the Review template (or standard structure if none exists).
-Save to Reviews/YYYY-MM-DD — Weekly Review.md.
-Link it from this week's last daily note.
-Do not ask questions. Save and stop.
-```
-
-Setup:
-```
-/schedule obsidian-weekly — every Friday 6:00 PM
-```
-
----
-
-### `obsidian-health-check` - Every Sunday at 9:00 PM
-
-**Runs the vault health check and logs a report.**
-
-Prompt to schedule:
-```
-Read _CLAUDE.md. Run: python scripts/vault_health.py --path ~/path/to/vault --json
-Parse the output. Write a health report to Knowledge/Vault Health YYYY-MM-DD.md
-summarizing findings by severity (critical, warning, info).
-Do not fix anything autonomously — only report.
-Do not ask questions. Save and stop.
-```
-
-Setup:
-```
-/schedule obsidian-health-check — every Sunday 9:00 PM
-```
-
----
-
-### Setting up scheduled agents
-
-All four can be configured at once:
-
-```
-/schedule
-```
-
-Then tell Claude which agents you want and at what times. Claude Code's scheduling system will handle the rest - agents run autonomously in the background on the defined cron schedule.
-
-To list or remove scheduled agents:
-```
-/schedule list
-/schedule remove obsidian-morning
-```
-
-### Running commands headless (`claude -p`) - important gotcha
+## Running commands headless (`claude -p`) - important gotcha
 
 Custom slash commands do NOT expand in non-interactive mode. A cron job or launchd
-job that runs `claude -p "/obsidian-daily"` will send the literal text `/obsidian-daily`
+job that runs `claude -p "/obsidian-health"` will send the literal text `/obsidian-health`
 as a prompt - Claude never loads the command file, so nothing happens.
 
 The reliable pattern for any headless run (cron, launchd, a wrapper script) is to point
@@ -1094,14 +798,14 @@ Claude at the command file and tell it to carry out the instructions:
 
 ```bash
 # Wrong - the slash command is not expanded in -p mode:
-claude -p "/obsidian-daily"
+claude -p "/obsidian-health"
 
 # Right - read the command file and execute its steps:
 cd "$VAULT" && claude --dangerously-skip-permissions \
-  -p "Read ~/.claude/commands/obsidian-daily.md and carry out its instructions exactly."
+  -p "Read ~/.claude/commands/obsidian-health.md and carry out its instructions exactly."
 ```
 
-Because `~/.claude/commands/obsidian-daily.md` is symlinked from this repo (see Testing
+Because `~/.claude/commands/obsidian-health.md` is symlinked from this repo (see Testing
 locally in the README), a scheduled run always uses the current command logic. Export an
 explicit `PATH` in launchd jobs - launchd strips the environment, so `claude` and `python3`
 may not be found otherwise.

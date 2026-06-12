@@ -103,15 +103,14 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   prompt synced (note saved to staging; Recommended Vault Updates are REPORTED,
   not auto-propagated).
 
-Pending (next tiers, planned 2026-06):
-
-- Tier 3 "deletions": commands with no target in this layout (daily, board, task,
-  recap, review, calendar family, etc.) + their SKILL.md sections. Research
-  residue belongs here too: `scripts/research/notebooklm.py` manages its own
-  `Research/NotebookLM/` paths independently of `lib/vault.py`, and the research
-  command docs (`commands/research*.md`, `x-*.md`, `youtube.md`, `podcast.md`,
-  `notebooklm.md`) still hardcode `Research/` paths, em-dash filename examples,
-  and daily-note link steps - delete or sync when deciding the toolkit's fate.
+- Tier 3 DELETIONS (2026-06-12, owner-confirmed list; resurrection is always
+  `git checkout upstream/main -- commands/<file>.md`):
+  - Core commands with no target in this layout (11): obsidian-daily, -board,
+    -task, -recap, -review, -capture, -graduate, -recurring, -decide, -log,
+    -adr. Their SKILL.md sections removed; the SKILL.md "Scheduled Agents"
+    section (morning/nightly/weekly/health prompts hardcoding Daily/, kanban,
+    and nightly auto-resolve) removed whole; the headless-run gotcha kept as
+    its own section with the example retargeted.
 
 ## Personal conventions
 

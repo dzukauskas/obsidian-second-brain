@@ -4,11 +4,13 @@ description: >
   conversation context, spawns a headless Claude subprocess that propagates
   vault-worthy items from the compaction summary into the vault. TRUST-GATED:
   it writes UNATTENDED with --dangerously-skip-permissions, so it ships inert.
-  It requires BOTH OBSIDIAN_VAULT_PATH and OBSIDIAN_BG_AGENT_ENABLED=1, plus a
-  PostCompact registration in ~/.claude/settings.json (see
-  hooks/postcompact.hook.example.json), before it does anything. setup.sh sets
-  OBSIDIAN_VAULT_PATH but never the enable flag, so a normal install leaves it
-  inert. Add/update only - it never deletes, moves, or archives notes.
+  It requires OBSIDIAN_VAULT_PATH, OBSIDIAN_BG_AGENT_ENABLED=1, AND the
+  compacted session's cwd to be the vault (or under it) - summaries from other
+  projects never propagate. Also needs a PostCompact registration in
+  ~/.claude/settings.json (see hooks/postcompact.hook.example.json) before it
+  does anything. setup.sh sets OBSIDIAN_VAULT_PATH but never the enable flag,
+  so a normal install leaves it inert. Add/update only - it never deletes,
+  moves, or archives notes.
 script: obsidian-bg-agent.sh
 enabled: false
 triggers:

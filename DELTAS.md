@@ -82,12 +82,20 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
   action items report-only; index.md incremental; logs to lowercase `logs/`; no
   daily-note step. SKILL.md section synced.
 
+- `hooks/obsidian-bg-agent.sh` + `.hook.yaml` - PATCHED (2026-06-12, tier 2),
+  still OFF: third gate added (session cwd must be the vault or under it,
+  fail-closed when cwd missing - mirrors `load_vault_context.py`); prompt
+  rewritten for the family-OS layout (timeline appends, existing knowledge
+  pages only, everything else surfaces via "needs owner decision" log entries;
+  never creates folders, never touches raw/, research/, wiki/labs, wiki/dna; no
+  daily/boards/ideas; ASCII punctuation). Note: the subprocess `cd "$VAULT"`
+  means the vault's PreToolUse guard fires for it too - hooks run regardless of
+  --dangerously-skip-permissions.
+
 Pending (next tiers, planned 2026-06):
 
-- Tier 2 "behavior risks" (remaining): `hooks/obsidian-bg-agent.sh` (no cwd
-  filter, hardcoded Daily/Boards prompt), research
-  `scripts/research/lib/vault.py` (mechanical Research/ mkdir + monolithic
-  log.md append).
+- Tier 2 "behavior risks" (remaining): research `scripts/research/lib/vault.py`
+  (mechanical Research/ mkdir + monolithic log.md append).
 - Tier 3 "deletions": commands with no target in this layout (daily, board, task,
   recap, review, calendar family, etc.) + their SKILL.md sections.
 
@@ -112,8 +120,9 @@ Pending (next tiers, planned 2026-06):
   `/podcast`, `/notebooklm`) - external `deep-research` skill + `research/` staging
   instead; the toolkit's Python layer writes mechanically (Research/ mkdir,
   monolithic log.md), bypassing vault rules
-- **Background PostCompact agent** - `OBSIDIAN_BG_AGENT_ENABLED` never set: no cwd
-  filter (would ingest ALL sessions' summaries) and prompt hardcodes Daily/Boards
+- **Background PostCompact agent** - `OBSIDIAN_BG_AGENT_ENABLED` never set. The
+  fork patched it (cwd gate + family-OS prompt, 2026-06-12) but it stays OFF
+  until the vault matures and its behavior is seen in supervised mode first
 - **Scheduled agents** (morning/nightly/weekly/health) as shipped - nightly
   auto-resolves contradictions, against vault rules
 - **`install.sh`** - legacy installer; `scripts/setup.sh` is the canon

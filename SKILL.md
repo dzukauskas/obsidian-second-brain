@@ -304,21 +304,9 @@ These slash commands can be used in any Claude surface. Each one is smart - it r
 
 ### `/obsidian-save`
 
-**The master save command.** Reads the entire conversation and extracts everything worth preserving.
+**The master save command.** Reads the entire conversation and files the durable items per the fork's routing.
 
-Steps:
-1. Scan the conversation and identify all vault-worthy items: decisions, tasks, people mentioned, projects started, ideas, learnings, deals, mentions/shoutouts
-2. Group items by type: people, projects, tasks, decisions, ideas, deals
-3. Spawn parallel subagents - one per group - so all note types are handled simultaneously:
-   - **People agent**: search for each person, create or update notes, log interactions
-   - **Projects agent**: search for each project, create or update notes
-   - **Tasks agent**: parse tasks, add to the right kanban columns
-   - **Decisions agent**: find relevant project notes, append to Key Decisions sections
-   - **Ideas agent**: search Ideas/ for related notes, create or append
-4. After all agents complete: update today's daily note with links to everything saved
-5. Report back: a clean list of what was saved and where
-
-Do not ask for guidance on where to save things - infer it. Only ask if something is genuinely ambiguous (e.g. a person mentioned with no context on who they are).
+Parallel subagents route: family facts -> profile `timeline:` appends in `wiki/people/` (external people get NO person notes - attribute inline); knowledge claims -> the matching `wiki/` knowledge pages (updated smarter, source + date + evidence level per claim); personal lab values / variants -> append-only `wiki/labs/` / `wiki/dna/` data notes per the vault's `_DOMAIN.md`. Tasks and loose ideas are NOT filed - they surface in the report (tasks live in the owner's `TODO.md`). `index.md` updated incrementally; log entry to `logs/YYYY-MM-DD.md`. Genuinely ambiguous routing -> ask the owner, never guess.
 
 ---
 

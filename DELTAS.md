@@ -127,6 +127,13 @@ Fork edits, by file (2026-06-12, tier 1 "core layer"):
     2026-06-12: skip), the owner does not document codebases, and Ideas/ does
     not exist. `scripts/architect_scan.py` and `mine_commit_decisions.py` stay
     (inert without the command, same logic as the research scripts).
+- `commands/obsidian-save.md` - REWRITTEN (2026-06-12, tier 3): the
+  People/Projects/Tasks/Decisions/Ideas/Content agents replaced with the
+  fork's routing (family facts -> timeline appends; knowledge -> wiki
+  knowledge pages; personal data -> append-only wiki/labs / wiki/dna; tasks
+  and loose ideas report-only); daily-note and social-media steps removed;
+  logs to lowercase `logs/`; ambiguous routing asks the owner. SKILL.md
+  section synced.
 
 ## Personal conventions
 
